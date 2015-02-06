@@ -1,0 +1,12 @@
+SELECT (COUNT(*) as ?count)
+FROM <%1$s>
+WHERE
+{
+  {
+    ?subj a <%2$s> .
+  }
+  UNION
+  {
+    ?subj rdfs:subClassOf+ <%2$s> .
+  }
+}

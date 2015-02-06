@@ -1,0 +1,33 @@
+#SELECT LIMIT ...
+SELECT (max(?count) as ?max) #(min(?count) as ?min)
+FROM <%1$s>
+WHERE
+{ 
+  {
+    SELECT (count(?subj) as ?count)
+    {
+      {
+        SELECT ?subj ?target
+        {
+          {
+            ?subj a <%2$s> .
+          }
+          UNION
+          { 
+            ?subj rdfs:subClassOf+ <%2$s> .
+          }
+          ?subj <%3$s> ?target .
+          {
+            ?target a <%4$s> .     
+          }
+          UNION
+          { 
+            ?target rdfs:subClassOf+ <%4$s> .
+          }
+        }
+        LIMIT 100000
+      }      
+    }
+    GROUP BY ?target 
+  }
+}

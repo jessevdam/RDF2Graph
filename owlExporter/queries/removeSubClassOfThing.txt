@@ -1,0 +1,24 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+
+WITH <http://ssb.wur.nl/owlExporter>
+DELETE
+{
+  ?class rdfs:subClassOf owl:Thing .
+}
+USING <http://ssb.wur.nl/owlExporter>
+WHERE
+{
+  ?class a owl:Class .
+  {
+    SELECT ?class (count(DISTINCT ?subclass) as ?count)
+    {
+      ?class rdfs:subClassOf ?subclass .
+    }
+    GROUP BY ?class
+  }
+  FILTER(?count > 1)
+}

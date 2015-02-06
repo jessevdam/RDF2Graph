@@ -1,0 +1,41 @@
+SELECT DISTINCT ?refType ?xsdType
+FROM <%1$s>
+WHERE
+{ 
+  {
+    SELECT ?subj
+    {
+      {
+        ?subj a <%2$s> .
+      }
+      UNION
+      {
+        ?subj rdfs:subClassOf+ <%2$s> .
+      }
+      ?subj <%3$s> ?target .
+    }
+    LIMIT 1000000
+  }
+  OPTIONAL
+  {
+    ?target a ?refType .
+    FILTER(!(?refType = owl:Class || ?refType = rdfs:Class))
+  }
+  OPTIONAL
+  {
+    {
+      ?target a owl:Class
+    }
+    UNION
+    {
+      ?target a rdfs:Class
+    }
+    ?target rdfs:subClassOf ?refType .
+  }
+ # OPTIONAL
+ # {
+ #   ?subj <%3$s> ?target .
+    BIND(DATATYPE(?target) as ?xsdType)
+ # }
+}
+LIMIT 1000

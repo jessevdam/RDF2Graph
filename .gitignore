@@ -1,0 +1,14 @@
+/bin
+/target
+/db
+/self
+/cytoscapeExporter/temp
+/cytoscapeExporter/outputs
+/shexExporter/node_modules
+/shexExporter/temp
+/shexExporter/outputs
+/owlExporter/temp
+/owlExporter/outputs
+/src/main/java/nl/wur/ssb/RDF2Graph/MainJesse.java
+.classpath
+.project

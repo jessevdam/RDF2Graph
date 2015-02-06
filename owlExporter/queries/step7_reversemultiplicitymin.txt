@@ -1,0 +1,41 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT
+{
+  _:revprop owl:inverseOf ?prop .
+  ?type rdfs:subClassOf _:cardinality .
+  _:cardinality a owl:Restriction .
+  _:cardinality owl:onProperty _:revprop .
+  _:cardinality owl:minQualifiedCardinality 1 .
+  _:cardinality owl:onClass ?class .  
+}
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?typeLink a RDF2Graph:TypeLink .
+  ?classProp RDF2Graph:linkTo ?typeLink .
+  ?classProp RDF2Graph:rdfProperty ?prop .
+  ?class RDF2Graph:property ?classProp .
+  ?typeLink RDF2Graph:reverseMultiplicity ?multiplicity .
+  FILTER(?multiplicity = rs:One-or-many)
+  ?typeLink RDF2Graph:type ?type .
+  ?type a RDF2Graph:Class .
+   FILTER NOT EXISTS
+  {
+    ?classProp RDF2Graph:linkTo ?typeLink2 .
+    ?typeLink2 RDF2Graph:type ?type2 .
+    FILTER NOT EXISTS
+    {
+      ?type2 a RDF2Graph:Class .
+    }
+  }
+}
+
+
+
+

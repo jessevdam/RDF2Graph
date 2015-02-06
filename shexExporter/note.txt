@@ -1,0 +1,1 @@
+Please note that the jsonld.js is adapted version from the original version. The objectify functions has been changed. Did have time yet to commit these changes back into the jsonld.js project.

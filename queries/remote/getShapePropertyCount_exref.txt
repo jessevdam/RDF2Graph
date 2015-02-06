@@ -1,0 +1,20 @@
+SELECT (COUNT(*) as ?count)
+FROM <%1$s>
+WHERE
+{ 
+  {
+    SELECT *
+    {
+      ?subj a <%2$s> . 
+      ?subj <%3$s> ?target .
+      FILTER NOT EXISTS
+      { 
+        ?target ?pred ?obj
+      }
+      BIND(DATATYPE(?target) as ?dtype)
+      FILTER(!bound(?dtype))
+    }
+    LIMIT 100000
+  }  
+}
+#%s

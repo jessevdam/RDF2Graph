@@ -1,0 +1,63 @@
+#create property descriptions
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+
+#CONSTRUCT
+#{ 
+#   ?source dv:property _:prop .
+#  _:prop dv:property ?pred .
+#  _:prop dv:name ?predName .
+#  _:prop dv:type ?typeName .
+#  _:prop dv:type ?simpleName .
+#  _:prop dv:forwardMultiplicity ?forwardMultiplicityName .
+#  _:prop dv:reverseMultiplicity ?reverseMultiplicityName .
+#  _:prop dv:count ?refCount .
+#  _:prop dv:isSimple ?isSimple .  
+#}
+SELECT DISTINCT ?shared ?sourceName ?predName ?typeName ?forwardMultiplicityName ?reverseMultiplicityName ?refCount ?isSimple ?pred
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?source RDF2Graph:property ?classProp .
+  BIND (replace(str(?source),".*[/#]","") as ?sourceName)
+  ?classProp RDF2Graph:rdfProperty ?pred .
+  BIND (replace(str(IF(?pred = rdfs:subClassOf,RDF2Graph:subClassOfByDef,?pred)),".*[/#]","") as ?predName)
+  ?classProp RDF2Graph:linkTo ?typeLink .
+  {
+    BIND (str(IF(?pred = rdfs:subClassOf,RDF2Graph:subClassOfByDef,?pred)) as ?predLink)
+    BIND (str(?source) as ?sourcePath)
+    ?typeLink RDF2Graph:type ?type .
+    FILTER(!REGEX(str(?type),"http://www.w3.org/2001/XMLSchema") && ?type != RDF2Graph:invalid && ?type != RDF2Graph:externalref)
+    BIND (replace(str(?type),".*[/#]","") as ?typeName)
+    BIND (false as ?isSimple)
+    BIND(concat(?sourcePath," (",?predLink,") ",str(?type)) as ?shared)
+  }
+  UNION
+  {
+    BIND (str(IF(?pred = rdfs:subClassOf,RDF2Graph:subClassOfByDef,?pred)) as ?predLink)
+    BIND (str(?source) as ?sourcePath)
+    ?typeLink RDF2Graph:type ?type .
+    FILTER(REGEX(str(?type),"http://www.w3.org/2001/XMLSchema") || ?type = RDF2Graph:invalid || ?type = RDF2Graph:externalref)
+    BIND (replace(str(?type),".*[/#]","") as ?typeName)
+    BIND (true as ?isSimple)
+    BIND(concat(?sourcePath," (",?predLink,") ",str(?sourcePath),"/",?typeName) as ?shared)
+  }  
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:forwardMultiplicity ?forwardMultiplicity .
+    BIND(IF(?forwardMultiplicity = rs:Exactly-one,"1..1",IF(?forwardMultiplicity = rs:Zero-or-one,"0..1",IF(?forwardMultiplicity = rs:Zero-or-many,"0..N",IF(?forwardMultiplicity = rs:One-or-many,"1..N",IF(?forwardMultiplicity = RDF2Graph:x_1,"X..1",IF(?forwardMultiplicity = RDF2Graph:x_n,"X..N",IF(?forwardMultiplicity = RDF2Graph:none,"-","invalid"))))))) as ?forwardMultiplicityName)
+  }
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:reverseMultiplicity ?reverseMultiplicity .
+    BIND(IF(?reverseMultiplicity = rs:Exactly-one,"1..1",IF(?reverseMultiplicity = rs:Zero-or-one,"0..1",IF(?reverseMultiplicity = rs:Zero-or-many,"0..N",IF(?reverseMultiplicity = rs:One-or-many,"1..N",IF(?reverseMultiplicity = RDF2Graph:x_1,"X..1",IF(?reverseMultiplicity = RDF2Graph:x_n,"X..N",IF(?reverseMultiplicity = RDF2Graph:none,"-","invalid"))))))) as ?reverseMultiplicityName)
+  }
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:count ?refCount .
+  }
+}
+ORDER BY ?source

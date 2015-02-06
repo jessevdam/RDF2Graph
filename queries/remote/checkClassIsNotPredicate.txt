@@ -1,0 +1,7 @@
+SELECT ?source
+FROM <%1$s>
+WHERE
+{ 
+  ?source <%2$s> ?dest
+}
+LIMIT 1

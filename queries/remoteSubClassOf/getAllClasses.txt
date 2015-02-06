@@ -1,0 +1,12 @@
+SELECT DISTINCT ?class
+FROM <%1$s>
+WHERE
+{
+  {
+    ?s a ?class .
+  }
+  UNION
+  {
+    ?s rdfs:subClassOf ?class .
+  }
+}

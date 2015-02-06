@@ -1,0 +1,27 @@
+#make a mark for which one we have to do scan for common parent to ref to
+#do it for references to
+#WITH <http://ssb.wur.nl/RDF2Graph/>
+#USING <http://ssb.wur.nl/RDF2Graph/>
+SELECT ?source ?type ?forwardMultiplicity ?reverseMultiplicity ?count
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+WHERE
+{
+  ?classProp RDF2Graph:rdfProperty <%s> .
+  ?source RDF2Graph:property ?classProp .
+  ?classProp RDF2Graph:linkTo ?typeLink .
+  ?typeLink RDF2Graph:type ?type .
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:forwardMultiplicity ?forwardMultiplicity .
+  }
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:reverseMultiplicity ?reverseMultiplicity .
+  }
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:count ?count .
+  }
+}
+
+

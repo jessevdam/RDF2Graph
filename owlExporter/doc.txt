@@ -1,0 +1,102 @@
+Steps
+1. get predicates (add domains + ranges)
+
+<prop> a rdf:Property
+<prop> rdf:domain ?source
+<prop> rdf:range ?target
+  
+2. get classes (select all instantiated ones)
+
+CONSTRUCT
+{
+  ?child a owl:Class .
+}
+SELECT DISTINCT ?child2 ?subclass ?parent2
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?parent a owl:Class .
+}
+
+3. get subclasses (select all insstantiated ones)
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+CONSTRUCT
+{
+  ?child rdfs:subClassOf ?parent .
+}
+SELECT DISTINCT ?child2 ?subclass ?parent2
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?child rdfs:subClassOf ?parent .
+  #any of the (super)parents has a class property
+  ?parent a owl:Class .
+  ?child a owl:Class .
+}
+
+4. Class property building
+
+<clazz> RDF2Graph:property <classProp>
+<classProp> a RDF2Graph:ClassProperty
+<classProp> RDF2Graph:rdfProperty <prop>
+<classProp> RDF2Graph:linkTo <classRefTypeProp>
+
+>2
+
+<clazz> rdfs:subClassOf <classProp>
+<classProp> a owl:Class
+<classProp> owl:unionOf (<classRefTypeProp>*)
+
+==1
+<clazz> rdfs:subClassOf <classRefTypeProp>
+#<classProp> a owl:Class
+#<classRefTypeProp>
+
+5. Link type building
+
+<classRefTypeProp> a RDF2Graph:TypeLink
+<classRefTypeProp> RDF2Graph:type <type> | <simple> | RDF2Graph:externalref
+
+-->external ref
+<classRefTypeProp> a owl:Class
+<classRefTypeProp> rdf:subClasOff <classRefTypePropAllValuesFrom>
+<classRefTypePropAllValuesFrom> a owl:Restriction
+<classRefTypePropAllValuesFrom> owl:onProperty <prop>
+<classRefTypePropAllValuesFrom> owl:allValuesFrom <type> | <simple> | rdfs:Resource
+
+6. Forward multiplicity
+
+<classRefTypeProp> RDF2Graph:forwardMultiplicity rs:Exactly-one | rs:One-or-many | rs:Zero-or-many | rs:Zero-or-one
+
+<classRefTypeProp> rdf:subClasOf <TypeLinkminForwardCardinality>
+<TypeLinkminForwardCardinality> a owl:Restriction
+<TypeLinkminForwardCardinality> owl:onProperty <prop>
+<TypeLinkminForwardCardinality> owl:minQualifiedCardinality <minCard>
+
+<classRefTypeProp> rdf:subClasOf <TypeLinkmaxForwardCardinality>
+<TypeLinkmaxForwardCardinality> a owl:Restriction
+<TypeLinkmaxForwardCardinality> owl:onProperty <prop>
+<TypeLinkmaxForwardCardinality> owl:maxQualifiedCardinality <maxCard>
+
+7. Reverse multiplicity
+
+<classRefTypeProp> RDF2Graph:reverseMultiplicity rs:Exactly-one | rs:One-or-many | rs:Zero-or-many | rs:Zero-or-one
+
+<revprop> owl:inverseOf <prop>
+<classRefTypeProp> rdf:subClasOf <TypeLinkminReverseCardinality>
+<TypeLinkminReverseCardinality> a owl:Restriction
+<TypeLinkminReverseCardinality> owl:onProperty <revprop>
+<TypeLinkminReverseCardinality> owl:minQualifiedCardinality <minCard>
+
+<classRefTypeProp> rdf:subClasOf <TypeLinkmaxReverseCardinality>
+<TypeLinkmaxReverseCardinality> a owl:Restriction
+<TypeLinkmaxReverseCardinality> owl:onProperty <revprop>
+<TypeLinkmaxReverseCardinality> owl:maxQualifiedCardinality <maxCard>
+			
+

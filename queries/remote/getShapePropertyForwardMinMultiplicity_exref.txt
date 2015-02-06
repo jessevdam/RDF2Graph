@@ -1,0 +1,17 @@
+SELECT *
+FROM <%1$s>
+WHERE
+{ 
+  ?subj a <%2$s> . 
+  FILTER NOT EXISTS
+  {
+    ?subj <%3$s> ?target .
+    FILTER NOT EXISTS
+    { 
+      ?target ?pred ?obj .
+    }
+    BIND(DATATYPE(?target) as ?dtype)
+    FILTER(!bound(?dtype))
+  }
+}
+LIMIT 1

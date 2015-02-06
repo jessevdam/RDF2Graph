@@ -1,0 +1,7 @@
+SELECT DISTINCT ?type ?pred
+FROM <%1$s>
+WHERE
+{ 
+  ?subj a ?type .
+  ?subj ?pred ?target .
+}

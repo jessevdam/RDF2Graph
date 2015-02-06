@@ -1,0 +1,16 @@
+#mark all classes that are a source of a property or are having a subclass that a source of a property
+#WITH <http://ssb.wur.nl/RDF2Graph/>
+INSERT
+{
+  ?parents a RDF2Graph:Class .
+}
+#USING <http://ssb.wur.nl/RDF2Graph/>
+#SELECT *
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+WHERE
+{
+  ?classSource a RDF2Graph:Class .
+  ?classSource rdfs:subClassOf* ?parents .
+}
+
+

@@ -1,0 +1,74 @@
+#PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+#PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+#PREFIX owl: <http://www.w3.org/2002/07/owl#>
+#PREFIX rs: <http://open-services.net/ns/core#>		
+
+#remove all links to the temporary properties before the cleaning step
+#WITH <http://ssb.wur.nl/RDF2Graph/>
+#USING <http://ssb.wur.nl/RDF2Graph/>
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+DELETE
+{
+  ?class RDF2Graph:property ?classProp .
+  ?class a RDF2Graph:Class .
+  ?class ?pred ?val .
+  ?classProp a RDF2Graph:ClassProperty .
+  ?classProp RDF2Graph:rdfProperty ?prop .
+  ?classProp RDF2Graph:noteAsNew ?temp .
+    
+  ?classProp RDF2Graph:linkTo ?typeLink .
+  ?typeLink a RDF2Graph:TypeLink .
+  ?typeLink RDF2Graph:type ?type .
+  ?typeLink RDF2Graph:count ?count .
+  ?typeLink RDF2Graph:forwardMultiplicity ?forward .
+  ?typeLink RDF2Graph:reverseMultiplicity ?reverse .
+  ?typeLink RDF2Graph:error ?errorObj .
+  ?errorObj a RDF2Graph:DestNoTypeError .
+  ?errorObj RDF2Graph:predicate ?predicate .
+  ?predicate RDF2Graph:error ?errorObj .
+}
+
+#SELECT *
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+WHERE
+{
+  ?classProp RDF2Graph:linkTo ?typeLink .
+  ?typeLink a RDF2Graph:TypeLink .
+  ?typeLink RDF2Graph:type ?type .
+  FILTER(regex(str(?type),"http://www.w3.org/2002/07/owl#.*"))
+  FILTER(?type != owl:Class)
+  OPTIONAL
+  {
+    ?class RDF2Graph:property ?classProp .
+    ?classProp a RDF2Graph:ClassProperty .
+    ?classProp RDF2Graph:rdfProperty ?prop .
+    FILTER EXISTS
+    {
+      ?classProp RDF2Graph:linkTo ?typeLink2 .
+      ?typeLink2 a RDF2Graph:TypeLink .
+      ?typeLink2 RDF2Graph:type ?type2 .
+      FILTER((!regex(str(?type2),"http://www.w3.org/2002/07/owl#.*")) || ?type2 = owl:Class)
+    }
+  }
+
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:count ?count .
+  }
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:forwardMultiplicity ?forward .
+  }
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:reverseMultiplicity ?reverse .
+  }
+  OPTIONAL
+  {
+    ?typeLink RDF2Graph:error ?errorObj .
+    ?errorObj a RDF2Graph:DestNoTypeError .
+    ?errorObj RDF2Graph:predicate ?predicate .
+    ?predicate RDF2Graph:error ?errorObj .
+  }
+}

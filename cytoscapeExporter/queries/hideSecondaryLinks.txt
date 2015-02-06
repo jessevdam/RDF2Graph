@@ -1,0 +1,20 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+
+SELECT ?type2 ?hide
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?source RDF2Graph:property ?classProp .
+  ?classProp RDF2Graph:rdfProperty ?pred .
+  ?classProp RDF2Graph:linkTo/RDF2Graph:type ?type . 
+  FILTER(REGEX(str(?type),"http://www.w3.org/2001/XMLSchema") || ?type = RDF2Graph:invalid || ?type = RDF2Graph:externalref || ?type = rdf:langString)
+  #BIND (replace(str(?source),".*[/#]","") as ?source2)
+  BIND (concat(str(?source),"/",replace(str(?type),".*[/#]","")) as ?type2)
+  #BIND (replace(str(?pred),".*[/#]","") as ?pred2)
+  BIND ("hide" as ?hide)
+}
+ORDER BY ?type2

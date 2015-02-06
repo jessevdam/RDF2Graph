@@ -1,0 +1,23 @@
+SELECT DISTINCT ?refType ?xsdType
+FROM <%1$s>
+WHERE
+{ 
+  {
+    SELECT ?subj ?target
+    {
+      ?subj a <%2$s> .
+      ?subj <%3$s> ?target .
+    }
+    LIMIT 1000000 #virtuoso 100000
+  }  
+  OPTIONAL
+  {
+    ?target a ?refType .
+  }
+  #OPTIONAL
+  #{
+  #  ?subj <%3$s> ?target .
+  BIND(DATATYPE(?target) as ?xsdType)
+  #}
+}
+LIMIT 1000

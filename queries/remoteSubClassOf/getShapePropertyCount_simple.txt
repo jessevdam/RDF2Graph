@@ -1,0 +1,15 @@
+SELECT (COUNT(*) as ?count)
+FROM <%1$s>
+WHERE
+{ 
+  {
+    ?subj a <%2$s> .
+  }
+  UNION
+  {
+    ?subj rdfs:subClassOf+ <%2$s> .
+  } 
+  ?subj <%3$s> ?target .
+  BIND(iri(DATATYPE(?target)) as ?dtype)
+  FILTER(bound(?dtype) && ?dtype = <%4$s>)
+}

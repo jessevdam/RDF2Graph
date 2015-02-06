@@ -1,0 +1,21 @@
+SELECT (max(?count) as ?max) #(min(?count) as ?min)
+FROM <%1$s>
+WHERE
+{ 
+  {
+    SELECT (count(?target) as ?count)
+    {
+      {
+        SELECT ?subj ?target
+        {
+          ?subj a <%2$s> . 
+          ?subj <%3$s> ?target .
+ 		  BIND(iri(DATATYPE(?target)) as ?dtype)
+ 		  FILTER(bound(?dtype) && ?dtype = <%4$s>)       
+        }
+        LIMIT 100000
+      }      
+    }
+    GROUP BY ?subj 
+  }
+}

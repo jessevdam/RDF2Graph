@@ -1,0 +1,10 @@
+SELECT (COUNT(*) as ?count)
+FROM <%1$s>
+WHERE
+{
+  ?subj <%2$s> ?obj .
+  FILTER NOT EXISTS
+  {
+    ?subj a ?type .
+  }
+}

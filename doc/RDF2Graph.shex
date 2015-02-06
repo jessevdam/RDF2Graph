@@ -1,0 +1,65 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+<http://ssb.wur.nl/RDF2Graph/ConceptClass> {
+  (
+    <http://www.w3.org/2000/01/rdf-schema#subClassOf> @<http://ssb.wur.nl/RDF2Graph/Class> |
+    <http://www.w3.org/2000/01/rdf-schema#subClassOf> @<http://ssb.wur.nl/RDF2Graph/ConceptClass>?
+  )
+}
+
+<http://ssb.wur.nl/RDF2Graph/ClassProperty> {
+  <http://ssb.wur.nl/RDF2Graph/linkTo> @<http://ssb.wur.nl/RDF2Graph/TypeLink>+,
+  <http://ssb.wur.nl/RDF2Graph/rdfProperty> @<http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>
+}
+
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> {
+  <http://ssb.wur.nl/RDF2Graph/count> xsd:integer,
+  <http://ssb.wur.nl/RDF2Graph/error> @<http://ssb.wur.nl/RDF2Graph/Error>?
+}
+
+<http://ssb.wur.nl/RDF2Graph/TypeLink> {
+  <http://ssb.wur.nl/RDF2Graph/reverseMultiplicity> .,
+  <http://ssb.wur.nl/RDF2Graph/type> @<http://ssb.wur.nl/RDF2Graph/Type>?,
+  <http://ssb.wur.nl/RDF2Graph/count> xsd:integer,
+  <http://ssb.wur.nl/RDF2Graph/forwardMultiplicity> .,
+  <http://ssb.wur.nl/RDF2Graph/error> @<http://ssb.wur.nl/RDF2Graph/DestNoTypeError>?
+}
+
+<http://ssb.wur.nl/RDF2Graph/DestNoTypeError> & <http://ssb.wur.nl/RDF2Graph/Error> {
+}
+
+<http://ssb.wur.nl/RDF2Graph/Type> {
+}
+
+<http://www.w3.org/2002/07/owl#Class> {
+  <http://www.w3.org/2000/01/rdf-schema#subClassOf> @<http://www.w3.org/2002/07/owl#Class>?
+}
+
+<http://ssb.wur.nl/RDF2Graph/Class> & <http://ssb.wur.nl/RDF2Graph/Type> {
+  <http://ssb.wur.nl/RDF2Graph/count> xsd:integer?,
+  <http://ssb.wur.nl/RDF2Graph/subClassOfInstanceCount> xsd:integer?,
+  <http://ssb.wur.nl/RDF2Graph/property> @<http://ssb.wur.nl/RDF2Graph/ClassProperty>*,
+  <http://www.w3.org/2000/01/rdf-schema#subClassOf> @<http://ssb.wur.nl/RDF2Graph/Class>?
+}
+
+<http://ssb.wur.nl/RDF2Graph/DataType> & <http://ssb.wur.nl/RDF2Graph/Type> {
+}
+
+<http://ssb.wur.nl/RDF2Graph/Error> {
+}
+
+<http://ssb.wur.nl/RDF2Graph/ExternalReference> & <http://ssb.wur.nl/RDF2Graph/Type> {
+}
+
+<http://ssb.wur.nl/RDF2Graph/SourceNoTypeError> & <http://ssb.wur.nl/RDF2Graph/Error> {
+  <http://ssb.wur.nl/RDF2Graph/count> xsd:integer
+}
+
+<http://ssb.wur.nl/RDF2Graph/Status> {
+  <http://ssb.wur.nl/RDF2Graph/stepDone> xsd:string+,
+  <http://ssb.wur.nl/RDF2Graph/updatePerformed> xsd:string+
+}
+
+<http://ssb.wur.nl/RDF2Graph/Invalid> & <http://ssb.wur.nl/RDF2Graph/Type> {
+}

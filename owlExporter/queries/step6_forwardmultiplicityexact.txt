@@ -1,0 +1,37 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT
+{
+  ?typeLink owl:intersectionOf _:cardinality .
+  _:cardinality a owl:Restriction .
+  _:cardinality owl:onProperty ?prop .
+  _:cardinality owl:qualifiedCardinality 1 .
+  _:cardinality ?onClass ?finalType .
+}
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?typeLink a RDF2Graph:TypeLink.
+  ?classProp RDF2Graph:linkTo ?typeLink .
+  ?classProp RDF2Graph:rdfProperty ?prop .
+  ?typeLink RDF2Graph:forwardMultiplicity ?multiplicity .
+  ?typeLink RDF2Graph:type ?type .
+  FILTER(?multiplicity = rs:Exactly-one)
+  FILTER(?type != RDF2Graph:invalid)
+  BIND(IF(?type = RDF2Graph:externalref,xsd:anyURI,?type) as ?finalType)
+  OPTIONAL
+  {
+    ?type a ?owlClass .
+  }
+  FILTER(!bound(?owlClass) || ?owlClass = RDF2Graph:Class)
+  BIND(IF(bound(?owlClass),owl:onClass,owl:onDataRange) as ?onClass)
+  # rs:Exactly-one, rs:Zero-or-one, rs:Zero-or-many, rs:One-or-many, RDF2Graph:x_1, RDF2Graph:x_n, RDF2Graph:none
+}
+
+
+

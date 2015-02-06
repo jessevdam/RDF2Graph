@@ -1,0 +1,6 @@
+SELECT ?class
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?class a RDF2Graph:Class .
+}

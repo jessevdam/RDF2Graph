@@ -1,0 +1,18 @@
+SELECT *
+FROM <%1$s>
+WHERE
+{ 
+  {
+    SELECT ?subj
+    {
+      ?subj a <%2$s> .
+    }
+    LIMIT 1000 
+  }
+  FILTER NOT EXISTS
+  {
+    ?subj <%3$s> ?target .
+    ?target a <%4$s> .
+  }
+}
+LIMIT 1

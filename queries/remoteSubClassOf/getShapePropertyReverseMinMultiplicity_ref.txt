@@ -1,0 +1,30 @@
+SELECT *
+FROM <%1$s>
+WHERE
+{ 
+  {
+    SELECT ?target
+    {
+      {
+        ?target a <%2$s> .
+      }
+      UNION
+      {
+        ?target rdfs:subClassOf+ <%2$s> .
+      }
+    }
+    LIMIT 1000000 
+  }
+  FILTER NOT EXISTS
+  {
+    ?subj <%3$s> ?target .
+    {
+      ?subj a <%4$s> .
+    }
+    UNION
+    { 
+      ?subj rdfs:subClassOf+ <%4$s> .
+    }
+  }
+}
+LIMIT 1

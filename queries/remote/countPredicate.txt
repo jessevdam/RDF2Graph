@@ -1,0 +1,6 @@
+SELECT (COUNT(*) as ?count)
+FROM <%1$s>
+WHERE
+{
+  ?s <%2$s> ?o .
+}

@@ -1,0 +1,18 @@
+#remove all the temporary marks
+#WITH <http://ssb.wur.nl/RDF2Graph/>
+#USING <http://ssb.wur.nl/RDF2Graph/>
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+INSERT
+{
+  ?child a RDF2Graph:ConceptClass .
+}
+WHERE
+{
+  ?parent rdfs:subClassOf ?child .
+  FILTER NOT EXISTS
+  { 
+    ?child a ?type .
+  }
+}
+
+

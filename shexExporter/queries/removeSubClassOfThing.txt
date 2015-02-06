@@ -1,0 +1,17 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dv: <http://ssb.wur.nl/RDF2Graph/viewer/>	
+
+WITH <http://ssb.wur.nl/shexExporter>
+DELETE
+{
+  ?parent rdfs:subClassOf owl:Thing .
+}
+USING <http://ssb.wur.nl/shexExporter>
+WHERE
+{
+  ?parent rdfs:subClassOf owl:Thing .
+}

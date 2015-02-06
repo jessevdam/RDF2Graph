@@ -1,0 +1,20 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>		
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?source2 ?pred2 ?type2
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?source RDF2Graph:property ?classProp .
+  ?classProp RDF2Graph:rdfProperty ?pred .
+  ?classProp RDF2Graph:linkTo/RDF2Graph:type ?type . 
+  FILTER(!(REGEX(str(?type),"http://www.w3.org/2001/XMLSchema") || ?type = RDF2Graph:invalid || ?type = RDF2Graph:externalref || ?type = rdf:langString))
+  
+  BIND (str(?source) as ?source2)
+  BIND (str(?type) as ?type2)
+  FILTER (?pred != rdfs:subClassOf)
+  BIND (str(?pred) as ?pred2)
+}
+ORDER BY ?type2 

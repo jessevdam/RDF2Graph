@@ -1,0 +1,45 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>	
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT
+{
+  ?prop a owl:DatatypeProperty .
+  ?prop rdfs:range ?propGroup .
+  ?propGroup a rdfs:Datatype .
+  ?propGroup owl:unionOf ?target .
+  ?propGroup RDF2Graph:makeAnon true .
+}
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?prop a rdf:Property .
+  {
+    SELECT ?prop (COUNT(DISTINCT ?type) as ?count)
+    {
+      ?classProp RDF2Graph:rdfProperty ?prop .
+      ?classProp RDF2Graph:linkTo ?typeLink .
+      ?typeLink RDF2Graph:type ?type .
+      FILTER NOT EXISTS
+      {
+        ?type a RDF2Graph:Class .
+      }
+      FILTER(?type != RDF2Graph:invalid)
+    }
+    GROUP BY(?prop)
+  }
+  FILTER(?count > 1)
+  ?classProp RDF2Graph:rdfProperty ?prop .
+  BIND(iri(concat(str(?prop),"/propgroupdata")) as ?propGroup) 
+  ?classProp RDF2Graph:linkTo ?typeLink .
+  ?typeLink RDF2Graph:type ?type .
+  FILTER NOT EXISTS
+  {
+    ?type a RDF2Graph:Class .
+  }
+  FILTER(?type != RDF2Graph:invalid)
+  BIND(IF(?type = RDF2Graph:externalref, xsd:anyURI, ?type) as ?target)
+}

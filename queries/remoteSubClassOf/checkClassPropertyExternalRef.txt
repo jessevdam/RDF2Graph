@@ -1,0 +1,20 @@
+#check whether something is an external reference or we having references to not type objects
+SELECT *
+FROM <%1$s>
+WHERE
+{ 
+  {
+    ?subj a <%2$s> .
+  }
+  UNION
+  {
+    ?subj rdfs:subClassOf+ <%2$s> .
+  }
+  ?subj <%3$s> ?target .
+  ?target ?pred ?obj .
+  FILTER NOT EXISTS
+  {
+    ?target a ?type .
+  }
+}
+LIMIT 1

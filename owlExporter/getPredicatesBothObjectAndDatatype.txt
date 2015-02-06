@@ -1,0 +1,27 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?prop ?target
+FROM <http://ssb.wur.nl/owlExporter>
+WHERE
+{
+  ?prop a owl:DatatypeProperty .
+  ?prop a owl:ObjectProperty .
+  {
+    ?prop rdfs:range ?target .
+    FILTER NOT EXISTS 
+    {
+      ?target owl:unionOf ?something.
+    }
+  }
+  UNION
+  {
+    ?prop rdfs:range/owl:unionOf/rdf:rest*/rdf:first ?target .
+  }
+
+}
+
+

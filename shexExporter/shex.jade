@@ -1,0 +1,34 @@
+doctype html
+html
+  body
+    pre
+      | PREFIX xsd: #{'<'}http://www.w3.org/2001/XMLSchema#>
+      | PREFIX rdf: #{'<'}http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      | 
+      - each clazz in data.class
+        - if(clazz.subClassOf)
+          | 
+          | #{'<'}#{clazz['@id']}> & #{_(lib.to_array(clazz.subClassOf)).map(function(item) { return "<" + item + ">";}).join()} {
+        - else
+          | 
+          | #{'<'}#{clazz['@id']}> {
+        | 
+        - var props = lib.to_array(clazz.property)
+        - each prop,index in props
+          | 
+          - var typeLinks = lib.to_array(prop.linkTo)
+          - if(typeLinks.length == 1)
+            | 
+            |   #{'<'}#{prop.rdfProperty['@id']}> #{lib.encodeType(prop.linkTo.type['@id'])}#{lib.encodeMultiplicity(prop.linkTo.forwardMultiplicity['@id'])}#{ index == props.length - 1 ? "" : ","} #{lib.comment()}
+          - else
+            | 
+            |   (
+            - each typeRef,index2 in typeLinks
+              | 
+              |     #{'<'}#{prop.rdfProperty['@id']}> #{lib.encodeType(typeRef.type['@id'])}#{lib.encodeMultiplicity(typeRef.forwardMultiplicity['@id'])}#{ index2 == typeLinks.length - 1 ? "" : " |"} #{lib.comment()}
+            | 
+            |   )#{ index == props.length - 1 ? "" : ","}
+        | 
+        | }
+        | 
+    

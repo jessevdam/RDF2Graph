@@ -1,0 +1,15 @@
+SELECT (COUNT(*) as ?count)
+FROM <%1$s>
+WHERE
+{ 
+  {
+    SELECT *
+    {
+      ?subj a <%2$s> . 
+      ?subj <%3$s> ?target .
+      BIND(iri(DATATYPE(?target)) as ?dtype)
+      FILTER(bound(?dtype) && ?dtype = <%4$s>)
+    }
+    LIMIT 100000
+  }
+}

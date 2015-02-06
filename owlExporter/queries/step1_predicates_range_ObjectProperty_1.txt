@@ -1,0 +1,32 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+
+CONSTRUCT
+{
+  ?prop a owl:ObjectProperty .
+#  ?prop a owl:DatatypeProperty .
+  ?prop rdfs:range ?type .
+}
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?prop a rdf:Property .
+  {
+    SELECT ?prop (COUNT(DISTINCT ?type) as ?count)
+    {
+      ?classProp RDF2Graph:rdfProperty ?prop .
+      ?classProp RDF2Graph:linkTo ?typeLink .
+      ?typeLink RDF2Graph:type ?type .
+      ?type a RDF2Graph:Class .
+    }
+    GROUP BY(?prop)
+  }
+  FILTER(?count = 1)
+  ?classProp RDF2Graph:rdfProperty ?prop .
+  ?classProp RDF2Graph:linkTo ?typeLink .
+  ?typeLink RDF2Graph:type ?type .
+  ?type a RDF2Graph:Class .
+}

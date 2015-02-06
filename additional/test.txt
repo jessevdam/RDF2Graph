@@ -1,0 +1,26 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT *
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+ ?source ?pred <http://purl.uniprot.org/core/domain> . 
+ #owl:DatatypeProperty ?pred ?obj .
+ # ?clazz RDF2Graph:property ?classProp .
+ # FILTER(regex(str(?clazz),"http://www.w3.org/2002/07/owl#.*"))
+ #  ?classProp a RDF2Graph:ClassProperty .
+ # ?classProp RDF2Graph:rdfProperty ?prop .
+   
+ # ?classProp RDF2Graph:linkTo ?typeLink .
+#  ?typeLink a RDF2Graph:TypeLink .
+#  ?typeLink RDF2Graph:type ?ref .
+  
+
+}
+LIMIT 10 
+
+

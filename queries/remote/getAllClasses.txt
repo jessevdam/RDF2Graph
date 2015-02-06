@@ -1,0 +1,6 @@
+SELECT DISTINCT ?class
+FROM <%1$s>
+WHERE
+{
+  ?s a ?class .
+}

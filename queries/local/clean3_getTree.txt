@@ -1,0 +1,21 @@
+#get all subClassOf relationships that are between two 'concrete' classes
+#WITH <http://ssb.wur.nl/RDF2Graph/>
+#USING <http://ssb.wur.nl/RDF2Graph/>
+SELECT ?child ?parent ?childCount ?parentCount
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+WHERE
+{
+  ?child rdfs:subClassOf ?parent .
+  ?child a RDF2Graph:Class .
+  ?parent a RDF2Graph:Class .
+  OPTIONAL
+  {
+    ?child RDF2Graph:count ?childCount .
+  }
+  OPTIONAL
+  {
+    ?parent RDF2Graph:count ?parentCount .
+  }
+}
+
+

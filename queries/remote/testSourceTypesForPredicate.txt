@@ -1,0 +1,17 @@
+SELECT (COUNT(*) as ?count)
+FROM <%1$s>
+WHERE
+{
+  {
+    SELECT *
+    WHERE
+    {
+      ?subj <%2$s> ?obj .
+    }
+    LIMIT 1000000
+  }
+  FILTER NOT EXISTS
+  {
+    ?subj a ?type .
+  }
+}

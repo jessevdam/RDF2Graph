@@ -1,0 +1,6 @@
+SELECT DISTINCT ?pred
+FROM <%1$s>
+WHERE
+{
+  ?subj ?pred ?obj .
+}

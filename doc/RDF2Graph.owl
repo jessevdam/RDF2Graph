@@ -1,0 +1,312 @@
+@prefix rs:    <http://open-services.net/ns/core#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix RDF2Graph: <http://ssb.wur.nl/RDF2Graph/> .
+
+RDF2Graph:ClassProperty
+        a                owl:Class ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b0 _:b1 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b2 _:b3 )
+                         ] ;
+        rdfs:subClassOf  [ a                         owl:Restriction ;
+                           owl:onClass               RDF2Graph:Class ;
+                           owl:onProperty            [ owl:inverseOf
+                                             RDF2Graph:property ] ;
+                           owl:qualifiedCardinality  1
+                         ] .
+
+_:b4    a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#anyURI> ;
+        owl:onProperty     RDF2Graph:forwardMultiplicity .
+
+RDF2Graph:forwardMultiplicity
+        a            owl:DatatypeProperty ;
+        rdfs:domain  RDF2Graph:TypeLink ;
+        rdfs:range   <http://www.w3.org/2001/XMLSchema#anyURI> .
+
+RDF2Graph:type  a    owl:ObjectProperty ;
+        rdfs:domain  RDF2Graph:TypeLink ;
+        rdfs:range   RDF2Graph:Type .
+
+_:b5    a                   owl:Class ;
+        owl:intersectionOf  ( _:b6 _:b7 ) .
+
+_:b3    a                            owl:Restriction ;
+        owl:minQualifiedCardinality  1 ;
+        owl:onClass                  RDF2Graph:TypeLink ;
+        owl:onProperty               RDF2Graph:linkTo .
+
+RDF2Graph:subClassOfInstanceCount
+        a            owl:DatatypeProperty ;
+        rdfs:domain  RDF2Graph:Class ;
+        rdfs:range   <http://www.w3.org/2001/XMLSchema#integer> .
+
+RDF2Graph:Type  a  owl:Class .
+
+RDF2Graph:ConceptClass
+        a                owl:Class ;
+        rdfs:subClassOf  [ a            owl:Class ;
+                           owl:unionOf  ( _:b5 _:b8 )
+                         ] .
+
+_:b7    a                  owl:Restriction ;
+        owl:allValuesFrom  RDF2Graph:ConceptClass ;
+        owl:onProperty     rdfs:subClassOf .
+
+RDF2Graph:count  a   owl:DatatypeProperty ;
+        rdfs:domain  [ a            owl:Class ;
+                       owl:unionOf  ( RDF2Graph:SourceNoTypeError RDF2Graph:TypeLink RDF2Graph:Class rdf:Property )
+                     ] ;
+        rdfs:range   <http://www.w3.org/2001/XMLSchema#integer> .
+
+RDF2Graph:DataType  a    owl:Class ;
+        rdfs:subClassOf  RDF2Graph:Type .
+
+RDF2Graph:stepDone  a  owl:DatatypeProperty ;
+        rdfs:domain  RDF2Graph:Status ;
+        rdfs:range   <http://www.w3.org/2001/XMLSchema#string> .
+
+_:b9    a                  owl:Restriction ;
+        owl:allValuesFrom  owl:Class ;
+        owl:onProperty     rdfs:subClassOf .
+
+_:b2    a                  owl:Restriction ;
+        owl:allValuesFrom  RDF2Graph:TypeLink ;
+        owl:onProperty     RDF2Graph:linkTo .
+
+owl:Class  a             owl:Class ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b10 _:b9 )
+                         ] .
+
+_:b11   a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#integer> ;
+        owl:onProperty     RDF2Graph:subClassOfInstanceCount .
+
+RDF2Graph:Status  a      owl:Class ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b12 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b13 )
+                         ] .
+
+_:b14   a                  owl:Restriction ;
+        owl:allValuesFrom  RDF2Graph:Class ;
+        owl:onProperty     rdfs:subClassOf .
+
+_:b8    a                   owl:Class ;
+        owl:intersectionOf  ( _:b14 _:b15 ) .
+
+RDF2Graph:DestNoTypeError
+        a                owl:Class ;
+        rdfs:subClassOf  RDF2Graph:Error ;
+        rdfs:subClassOf  [ a                         owl:Restriction ;
+                           owl:onClass               RDF2Graph:TypeLink ;
+                           owl:onProperty            [ owl:inverseOf
+                                             RDF2Graph:error ] ;
+                           owl:qualifiedCardinality  1
+                         ] .
+
+rdf:Property  a          owl:Class ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b16 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b17 _:b18 )
+                         ] .
+
+_:b19   a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#integer> ;
+        owl:onProperty     RDF2Graph:count .
+
+RDF2Graph:SourceNoTypeError
+        a                owl:Class ;
+        rdfs:subClassOf  RDF2Graph:Error ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b20 )
+                         ] .
+
+_:b15   a                         owl:Restriction ;
+        owl:onClass               RDF2Graph:Class ;
+        owl:onProperty            rdfs:subClassOf ;
+        owl:qualifiedCardinality  1 .
+
+_:b21   a                            owl:Restriction ;
+        owl:maxQualifiedCardinality  1 ;
+        owl:onClass                  RDF2Graph:Class ;
+        owl:onProperty               rdfs:subClassOf .
+
+RDF2Graph:updatePerformed
+        a            owl:DatatypeProperty ;
+        rdfs:domain  RDF2Graph:Status ;
+        rdfs:range   <http://www.w3.org/2001/XMLSchema#string> .
+
+_:b22   a                  owl:Restriction ;
+        owl:allValuesFrom  RDF2Graph:ClassProperty ;
+        owl:onProperty     RDF2Graph:property .
+
+_:b23   a                  owl:Restriction ;
+        owl:allValuesFrom  RDF2Graph:Type ;
+        owl:onProperty     RDF2Graph:type .
+
+_:b10   a                            owl:Restriction ;
+        owl:maxQualifiedCardinality  1 ;
+        owl:onClass                  owl:Class ;
+        owl:onProperty               rdfs:subClassOf .
+
+RDF2Graph:TypeLink  a    owl:Class ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b19 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b24 _:b25 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b23 _:b26 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b4 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b27 )
+                         ] ;
+        rdfs:subClassOf  [ a                         owl:Restriction ;
+                           owl:onClass               RDF2Graph:ClassProperty ;
+                           owl:onProperty            [ owl:inverseOf
+                                             RDF2Graph:linkTo ] ;
+                           owl:qualifiedCardinality  1
+                         ] .
+
+RDF2Graph:Invalid  a     owl:Class ;
+        rdfs:subClassOf  RDF2Graph:Type .
+
+_:b28   a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#integer> ;
+        owl:onProperty     RDF2Graph:count .
+
+_:b26   a                            owl:Restriction ;
+        owl:maxQualifiedCardinality  1 ;
+        owl:onClass                  RDF2Graph:Type ;
+        owl:onProperty               RDF2Graph:type .
+
+_:b27   a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#anyURI> ;
+        owl:onProperty     RDF2Graph:reverseMultiplicity .
+
+rdfs:subClassOf  a   owl:ObjectProperty ;
+        rdfs:domain  [ a            owl:Class ;
+                       owl:unionOf  ( RDF2Graph:ConceptClass owl:Class RDF2Graph:Class )
+                     ] ;
+        rdfs:range   [ a            owl:Class ;
+                       owl:unionOf  ( RDF2Graph:ConceptClass owl:Class RDF2Graph:Class )
+                     ] .
+
+RDF2Graph:rdfProperty
+        a            owl:ObjectProperty ;
+        rdfs:domain  RDF2Graph:ClassProperty ;
+        rdfs:range   rdf:Property .
+
+_:b18   a                  owl:Restriction ;
+        owl:allValuesFrom  RDF2Graph:Error ;
+        owl:onProperty     RDF2Graph:error .
+
+RDF2Graph:Error  a       owl:Class ;
+        rdfs:subClassOf  [ a                         owl:Restriction ;
+                           owl:onClass               rdf:Property ;
+                           owl:onProperty            [ owl:inverseOf
+                                             RDF2Graph:error ] ;
+                           owl:qualifiedCardinality  1
+                         ] .
+
+RDF2Graph:error  a   owl:ObjectProperty ;
+        rdfs:domain  [ a            owl:Class ;
+                       owl:unionOf  ( RDF2Graph:TypeLink rdf:Property )
+                     ] ;
+        rdfs:range   [ a            owl:Class ;
+                       owl:unionOf  ( RDF2Graph:DestNoTypeError RDF2Graph:Error )
+                     ] .
+
+_:b13   a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#string> ;
+        owl:onProperty     RDF2Graph:updatePerformed .
+
+_:b6    a                            owl:Restriction ;
+        owl:maxQualifiedCardinality  1 ;
+        owl:onClass                  RDF2Graph:ConceptClass ;
+        owl:onProperty               rdfs:subClassOf .
+
+RDF2Graph:linkTo  a  owl:ObjectProperty ;
+        rdfs:domain  RDF2Graph:ClassProperty ;
+        rdfs:range   RDF2Graph:TypeLink .
+
+RDF2Graph:Class  a       owl:Class ;
+        rdfs:subClassOf  RDF2Graph:Type ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b28 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b29 _:b21 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b22 )
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Class ;
+                           owl:intersectionOf  ( _:b11 )
+                         ] .
+
+RDF2Graph:property  a  owl:ObjectProperty ;
+        rdfs:domain  RDF2Graph:Class ;
+        rdfs:range   RDF2Graph:ClassProperty .
+
+_:b29   a                  owl:Restriction ;
+        owl:allValuesFrom  RDF2Graph:Class ;
+        owl:onProperty     rdfs:subClassOf .
+
+RDF2Graph:ExternalReference
+        a                owl:Class ;
+        rdfs:subClassOf  RDF2Graph:Type .
+
+_:b1    a                  owl:Restriction ;
+        owl:allValuesFrom  rdf:Property ;
+        owl:onProperty     RDF2Graph:rdfProperty .
+
+_:b24   a                            owl:Restriction ;
+        owl:maxQualifiedCardinality  1 ;
+        owl:onClass                  RDF2Graph:DestNoTypeError ;
+        owl:onProperty               RDF2Graph:error .
+
+_:b25   a                  owl:Restriction ;
+        owl:allValuesFrom  RDF2Graph:DestNoTypeError ;
+        owl:onProperty     RDF2Graph:error .
+
+_:b16   a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#integer> ;
+        owl:onProperty     RDF2Graph:count .
+
+_:b20   a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#integer> ;
+        owl:onProperty     RDF2Graph:count .
+
+_:b17   a                            owl:Restriction ;
+        owl:maxQualifiedCardinality  1 ;
+        owl:onClass                  RDF2Graph:Error ;
+        owl:onProperty               RDF2Graph:error .
+
+_:b12   a                  owl:Restriction ;
+        owl:allValuesFrom  <http://www.w3.org/2001/XMLSchema#string> ;
+        owl:onProperty     RDF2Graph:stepDone .
+
+_:b0    a                         owl:Restriction ;
+        owl:onClass               rdf:Property ;
+        owl:onProperty            RDF2Graph:rdfProperty ;
+        owl:qualifiedCardinality  1 .
+
+RDF2Graph:reverseMultiplicity
+        a            owl:DatatypeProperty ;
+        rdfs:domain  RDF2Graph:TypeLink ;
+        rdfs:range   <http://www.w3.org/2001/XMLSchema#anyURI> .

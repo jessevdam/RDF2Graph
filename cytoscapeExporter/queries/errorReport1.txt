@@ -1,0 +1,26 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?errorReport1 ?errorObj2 ?errorReport2
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  BIND("ErrorReport" as ?errorReport1)
+  BIND("ErrorReportHidden" as ?errorReport2)
+  {
+   ?errorObj a RDF2Graph:SourceNoTypeError .
+  }
+  UNION
+  {
+    ?errorObj a RDF2Graph:DestNoTypeError .
+  }
+  UNION
+  {
+    ?errorObj a RDF2Graph:ClassAsPredicateError .
+  }
+  BIND(str(?errorObj) as ?errorObj2) .
+}
+ORDER BY ?sourceName

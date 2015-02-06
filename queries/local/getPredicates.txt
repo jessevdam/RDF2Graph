@@ -1,0 +1,5 @@
+SELECT ?pred
+WHERE
+{
+  ?pred a rdf:Property.
+}

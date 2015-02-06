@@ -2,7 +2,7 @@
 'use strict';
 
 var fs = require('fs');
-var jsonld = require('/home/jesse/code/ruby/shexvalidate/js/jsonld.js') // require('/home/jesse/programs/jsonld.js/js/jsonld')();
+var jsonld = require('./jsonld.js') 
 var jade = require('jade');
 var _ = require('lodash');
 

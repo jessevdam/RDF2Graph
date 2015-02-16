@@ -7,7 +7,7 @@ WHERE
     {
       ?subj a <%2$s> .
     }
-    LIMIT 1000 
+    LIMIT 100000 
   }
   FILTER NOT EXISTS
   {

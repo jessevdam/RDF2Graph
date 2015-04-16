@@ -1,4 +1,3 @@
-
 SELECT ?child ?parent
 FROM <%1$s>
 WHERE

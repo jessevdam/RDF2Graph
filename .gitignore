@@ -9,6 +9,7 @@
 /shexExporter/outputs
 /owlExporter/temp
 /owlExporter/outputs
+/rdfExporter/outputs
 /src/main/java/nl/wur/ssb/RDF2Graph/MainJesse.java
 .classpath
 .project

@@ -203,7 +203,7 @@ public class TreeNode
     this.projectStep2Done = true;
     return this.childs;
   }
-  //Remove element that are already by parent node
+  //Remove element that are already referenced by parent node
   void projectDownStep3(HashSet<ShapeProperty> parentsContents) 
   {
   	LinkedList<ShapeProperty> toRemove = new LinkedList<ShapeProperty>();

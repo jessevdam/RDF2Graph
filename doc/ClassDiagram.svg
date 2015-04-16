@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg height="632" version="1.1" width="630" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#ffffff" height="66" stroke="#ffffff" stroke-width="1" width="120" x="177" y="14"/>
+<rect fill="none" height="66" stroke="#000000" stroke-width="1" width="120" x="177" y="14"/>
+<text font-family="Dialog" font-size="12" x="222" y="27">
+Type</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="120" x="177" y="37"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="120" x="177" y="58"/>
+<rect fill="#ffffff" height="104" stroke="#ffffff" stroke-width="1" width="205" x="401" y="262"/>
+<rect fill="none" height="104" stroke="#000000" stroke-width="1" width="205" x="401" y="262"/>
+<text font-family="Dialog" font-size="12" x="475" y="275">
+Type LInk</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="205" x="401" y="285"/>
+<text font-family="Dialog" font-size="12" x="405" y="299">
+count : Integer</text>
+<text font-family="Dialog" font-size="12" x="405" y="315">
+forwardMultiplicity : Multiplicity</text>
+<text font-family="Dialog" font-size="12" x="405" y="331">
+reverseMultiplicity : Multiplicity</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="205" x="401" y="342"/>
+<rect fill="#ffffff" height="66" stroke="#ffffff" stroke-width="1" width="129" x="33" y="126"/>
+<rect fill="none" height="66" stroke="#000000" stroke-width="1" width="129" x="33" y="126"/>
+<text font-family="Dialog" font-size="12" x="38" y="139">
+External Reference</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="129" x="33" y="149"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="129" x="33" y="170"/>
+<rect fill="#ffffff" height="66" stroke="#ffffff" stroke-width="1" width="66" x="169" y="126"/>
+<rect fill="none" height="66" stroke="#000000" stroke-width="1" width="66" x="169" y="126"/>
+<text font-family="Dialog" font-size="12" x="182" y="139">
+Invalid</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="66" x="169" y="149"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="66" x="169" y="170"/>
+<rect fill="#ffffff" height="66" stroke="#ffffff" stroke-width="1" width="73" x="489" y="126"/>
+<rect fill="none" height="66" stroke="#000000" stroke-width="1" width="73" x="489" y="126"/>
+<text font-family="Dialog" font-size="12" x="494" y="139">
+Data Type</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="73" x="489" y="149"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="73" x="489" y="170"/>
+<rect fill="#ffffff" height="85" stroke="#ffffff" stroke-width="1" width="225" x="249" y="126"/>
+<rect fill="none" height="85" stroke="#000000" stroke-width="1" width="225" x="249" y="126"/>
+<text font-family="Dialog" font-size="12" x="345" y="139">
+Class</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="225" x="249" y="149"/>
+<text font-family="Dialog" font-size="12" x="253" y="163">
+count : Integer</text>
+<text font-family="Dialog" font-size="12" x="253" y="179">
+subClassOfInstanceCount : Integer</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="225" x="249" y="189"/>
+<rect fill="#ffffff" height="67" stroke="#ffffff" stroke-width="1" width="100" x="233" y="262"/>
+<rect fill="none" height="67" stroke="#000000" stroke-width="1" width="100" x="233" y="262"/>
+<text font-family="Dialog" font-size="12" x="238" y="275">
+Class Property</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="100" x="233" y="285"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="100" x="233" y="306"/>
+<rect fill="#ffffff" height="69" stroke="#ffffff" stroke-width="1" width="105" x="473" y="430"/>
+<rect fill="none" height="69" stroke="#000000" stroke-width="1" width="105" x="473" y="430"/>
+<text font-family="Dialog" font-size="12" x="510" y="443">
+Error</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="105" x="473" y="453"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="105" x="473" y="475"/>
+<rect fill="#ffffff" height="75" stroke="#ffffff" stroke-width="1" width="161" x="41" y="543"/>
+<rect fill="none" height="75" stroke="#000000" stroke-width="1" width="161" x="41" y="543"/>
+<text font-family="Dialog" font-size="12" x="46" y="556">
+Class as predicate error</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="161" x="41" y="566"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="161" x="41" y="591"/>
+<rect fill="#ffffff" height="69" stroke="#ffffff" stroke-width="1" width="140" x="476" y="539"/>
+<rect fill="none" height="69" stroke="#000000" stroke-width="1" width="140" x="476" y="539"/>
+<text font-family="Dialog" font-size="12" x="481" y="552">
+Source no type error</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="140" x="476" y="562"/>
+<text font-family="Dialog" font-size="12" x="480" y="576">
+count : Integer</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="140" x="476" y="586"/>
+<polyline fill="none" points="89,126 89,110 233,110 233,79" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="233,79 240,91 226,91" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="233,79 240,91 226,91" stroke="#000000" stroke-width="1"/>
+<ellipse cx="168" cy="108" fill="#000000" rx="0.5" ry="0.5" stroke="#000000" stroke-width="1"/>
+<ellipse cx="169" cy="109" fill="#ffffff" rx="-0.5" ry="-0.5" stroke="#ffffff" stroke-width="1"/>
+<polyline fill="none" points="193,126 193,110 233,110 233,79" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="233,79 240,91 226,91" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="233,79 240,91 226,91" stroke="#000000" stroke-width="1"/>
+<polyline fill="none" points="521,126 521,110 233,110 233,79" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="233,79 240,91 226,91" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="233,79 240,91 226,91" stroke="#000000" stroke-width="1"/>
+<polyline fill="none" points="361,126 361,110 233,110 233,79" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="233,79 240,91 226,91" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="233,79 240,91 226,91" stroke="#000000" stroke-width="1"/>
+<polyline fill="none" points="289,210 289,262" stroke="#000000" stroke-width="1"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="282" x2="289" y1="250" y2="262"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="296" x2="289" y1="250" y2="262"/>
+<text font-family="Dialog" font-size="12" x="296" y="241">
+property</text>
+<text font-family="Dialog" font-size="12" x="256" y="227">
+1..1</text>
+<text font-family="Dialog" font-size="12" x="254" y="255">
+0..N</text>
+<polyline fill="none" points="332,302 401,302" stroke="#000000" stroke-width="1"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="389" x2="401" y1="309" y2="302"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="389" x2="401" y1="295" y2="302"/>
+<text font-family="Dialog" font-size="12" x="346" y="290">
+linkTo</text>
+<text font-family="Dialog" font-size="12" x="339" y="324">
+1..1</text>
+<text font-family="Dialog" font-size="12" x="371" y="324">
+1..N</text>
+<rect fill="#ffffff" height="69" stroke="#ffffff" stroke-width="1" width="113" x="225" y="430"/>
+<rect fill="none" height="69" stroke="#000000" stroke-width="1" width="113" x="225" y="430"/>
+<text font-family="Dialog" font-size="12" x="241" y="443">
+rdfs:Property</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="113" x="225" y="453"/>
+<text font-family="Dialog" font-size="12" x="229" y="467">
+count : Integer</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="113" x="225" y="477"/>
+<polyline fill="none" points="577,262 577,54 296,54" stroke="#000000" stroke-width="1"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="308" x2="296" y1="47" y2="54"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="308" x2="296" y1="61" y2="54"/>
+<text font-family="Dialog" font-size="12" x="498" y="34">
+type</text>
+<text font-family="Dialog" font-size="12" x="586" y="255">
+0..N</text>
+<text font-family="Dialog" font-size="12" x="309" y="78">
+1..1</text>
+<polyline fill="none" points="505,365 505,430" stroke="#000000" stroke-width="1"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="498" x2="505" y1="418" y2="430"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="512" x2="505" y1="418" y2="430"/>
+<text font-family="Dialog" font-size="12" x="514" y="404">
+error</text>
+<text font-family="Dialog" font-size="12" x="473" y="383">
+1..1</text>
+<text font-family="Dialog" font-size="12" x="473" y="423">
+0..N</text>
+<polyline fill="none" points="121,543 121,526 513,526 513,498" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="513,498 520,510 506,510" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="513,498 520,510 506,510" stroke="#000000" stroke-width="1"/>
+<polyline fill="none" points="513,539 513,498" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="513,498 520,510 506,510" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="513,498 520,510 506,510" stroke="#000000" stroke-width="1"/>
+<polyline fill="none" points="281,328 281,430" stroke="#000000" stroke-width="1"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="274" x2="281" y1="418" y2="430"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="288" x2="281" y1="418" y2="430"/>
+<text font-family="Dialog" font-size="12" x="284" y="384">
+rdfProperty</text>
+<text font-family="Dialog" font-size="12" x="251" y="346">
+1..N</text>
+<text font-family="Dialog" font-size="12" x="252" y="404">
+1..1</text>
+<polyline fill="none" points="337,470 473,470" stroke="#000000" stroke-width="1"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="461" x2="473" y1="477" y2="470"/>
+<line fill="#000000" stroke="#000000" stroke-width="1" x1="461" x2="473" y1="463" y2="470"/>
+<text font-family="Dialog" font-size="12" x="385" y="461">
+error</text>
+<text font-family="Dialog" font-size="12" x="349" y="485">
+1..1</text>
+<text font-family="Dialog" font-size="12" x="436" y="485">
+0..N</text>
+<rect fill="#ffffff" height="72" stroke="#ffffff" stroke-width="1" width="176" x="241" y="542"/>
+<rect fill="none" height="72" stroke="#000000" stroke-width="1" width="176" x="241" y="542"/>
+<text font-family="Dialog" font-size="12" x="250" y="555">
+Destination no type error</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="176" x="241" y="565"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="176" x="241" y="589"/>
+<polyline fill="none" points="313,542 313,526 513,526 513,498" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="513,498 520,510 506,510" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="513,498 520,510 506,510" stroke="#000000" stroke-width="1"/>
+</svg>

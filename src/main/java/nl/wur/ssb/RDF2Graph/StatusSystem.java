@@ -1,11 +1,11 @@
 package nl.wur.ssb.RDF2Graph;
 
-import nl.wur.ssb.RDFConnection.RDFConnection;
+import nl.wur.ssb.RDFSimpleCon.RDFSimpleCon;
 
 public class StatusSystem
 {
-	private RDFConnection graph;
-	public StatusSystem(RDFConnection graph)
+	private RDFSimpleCon graph;
+	public StatusSystem(RDFSimpleCon graph)
 	{
 		this.graph = graph;
 	}

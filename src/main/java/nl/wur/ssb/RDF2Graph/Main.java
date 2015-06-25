@@ -10,10 +10,10 @@ import java.util.LinkedList;
 import nl.wur.ssb.RDF2Graph.simplify.ShapeProperty;
 import nl.wur.ssb.RDF2Graph.simplify.Tree;
 import nl.wur.ssb.RDF2Graph.simplify.TreeNode;
-import nl.wur.ssb.RDFConnection.RDFConnection;
-import nl.wur.ssb.RDFConnection.ResultLine;
-import nl.wur.ssb.RDFConnection.concurrent.ResultHandler;
-import nl.wur.ssb.RDFConnection.concurrent.TaskExecuter;
+import nl.wur.ssb.RDFSimpleCon.RDFSimpleCon;
+import nl.wur.ssb.RDFSimpleCon.ResultLine;
+import nl.wur.ssb.RDFSimpleCon.concurrent.ResultHandler;
+import nl.wur.ssb.RDFSimpleCon.concurrent.TaskExecuter;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -32,9 +32,9 @@ public class Main
 {
 	private HashSet<String> excludeProps = new HashSet<String>();
 	private StatusSystem status;
-  private	RDFConnection remoteGraph1;
-  private	RDFConnection remoteGraph2;
-	private RDFConnection localStore;
+  private	RDFSimpleCon remoteGraph1;
+  private	RDFSimpleCon remoteGraph2;
+	private RDFSimpleCon localStore;
 	private String project;
 	private TaskExecuter executer;
 	private boolean collectPredicateStatistics = false;
@@ -61,10 +61,10 @@ public class Main
 		if(args.length >= 2)
 		{
 			main.project = args[0];
-			main.remoteGraph1 = main.remoteGraph2 = new RDFConnection(args[1]);
+			main.remoteGraph1 = main.remoteGraph2 = new RDFSimpleCon(args[1]);
 			if(args.length >= 3 && args[2].equals("+"))
 			{
-				main.remoteGraph2 = new RDFConnection(args[3]);
+				main.remoteGraph2 = new RDFSimpleCon(args[3]);
 				rest = 4;
 			}
 		}
@@ -157,7 +157,7 @@ public class Main
 	public void init() throws Exception
 	{				
 		System.out.println("loading/creating local tdb database");
-		localStore = new RDFConnection("[http://ssb.wur.nl/RDF2Graph/]",this.project);	
+		localStore = new RDFSimpleCon("[http://ssb.wur.nl/RDF2Graph/]",this.project);	
 		System.out.println("loading/creating local tdb database done");
 		localStore.setNsPrefix("rdf","http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		localStore.setNsPrefix("rdfs","http://www.w3.org/2000/01/rdf-schema#");
@@ -819,7 +819,7 @@ public class Main
 		}
 		return null;
 	}
-  private Iterable<ResultLine> runRemoteQuery(RDFConnection graph,String queryFile,Object ... args) throws Exception
+  private Iterable<ResultLine> runRemoteQuery(RDFSimpleCon graph,String queryFile,Object ... args) throws Exception
   {    
     long millis = System.currentTimeMillis();
     if(treatSubClassOfAsIntanceOf)
@@ -831,12 +831,12 @@ public class Main
 	  return toRet;
   }
   
-  private Iterable<ResultLine> runLocalQuery(RDFConnection graph,boolean preload,String queryFile,Object ... args) throws Exception
+  private Iterable<ResultLine> runLocalQuery(RDFSimpleCon graph,boolean preload,String queryFile,Object ... args) throws Exception
   {
 	  return graph.runQuery("local/" + queryFile,true,args);
   }
 
-	private void runUpdateQueryOnce(RDFConnection graph,String file,Object ...args)
+	private void runUpdateQueryOnce(RDFSimpleCon graph,String file,Object ...args)
 	{
 	  if(!graph.containsLit("RDF2Graph:status","RDF2Graph:updatePerformed",file))
 	 	{
@@ -845,7 +845,7 @@ public class Main
 	  	graph.addLit("RDF2Graph:status","RDF2Graph:updatePerformed",file);
 	 	}
 	}
-	private void runUpdateQueryOnceA(RDFConnection graph,String file,Object ...args)
+	private void runUpdateQueryOnceA(RDFSimpleCon graph,String file,Object ...args)
 	{
 	  System.out.println("DEV: running update query " + file);
 	  graph.runUpdateQuery(file,args);

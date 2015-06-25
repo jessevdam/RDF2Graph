@@ -1,4 +1,4 @@
-echo "Creating rdf file"
+echo "Creating rdf turtle file"
 project=$1 
 outfile=$2
 if [[ "$1" = "-h" ||  "$1" = "--help"  ||  "$outfile" = "" ]] ; then

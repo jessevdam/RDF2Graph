@@ -18,6 +18,7 @@ import nl.wur.ssb.RDFSimpleCon.concurrent.TaskExecuter;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.jena.riot.web.HttpOp;
+import org.apache.log4j.BasicConfigurator;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
@@ -53,6 +54,7 @@ public class Main
 
 	public static void main(String args[]) throws Exception
 	{
+		BasicConfigurator.configure();
 		Main main = new Main();
 
 		boolean ok = true;
@@ -304,6 +306,11 @@ public class Main
 			cleanOWL();
 		  
 		  this.includeStaticDefs();
+		  
+		  //These steps has always to be executed
+	    //Step 7.1 Mark instantiated classes and in between classes
+	  	runUpdateQueryOnce(localStore,"clean2_project1.txt");
+	  	runUpdateQueryOnce(localStore,"clean2_project2.txt");
 		  //7. The cleaning phase
 		  if(executeSimplify && !(status.stepDone("executeSimplify")))
 		  {
@@ -655,9 +662,6 @@ public class Main
 	
 	private void simplify() throws Exception
 	{
-    //Step 7.1 Mark instantiated classes and in between classes
-  	runUpdateQueryOnce(localStore,"clean2_project1.txt");
-  	runUpdateQueryOnce(localStore,"clean2_project2.txt");
 	  //Step 7.2
 	  Tree tree = buildTree();
 	  //Step 7.3
@@ -689,8 +693,8 @@ public class Main
 			if(source == null || type == null)
 				throw new RuntimeException("source or dest of shape property is null");
 			int count = item.getLitInt("count",0);
-			String forwardMultiplicity = item.getLitString("forwardMultiplicity");
-			String reverseMultiplicity = item.getLitString("reverseMultiplicity");;
+			String forwardMultiplicity = item.getIRI("forwardMultiplicity");
+			String reverseMultiplicity = item.getIRI("reverseMultiplicity");;
 			TreeNode sourceNode = tree.getNode(source);
 			if(sourceNode == null)
 			{
@@ -764,7 +768,7 @@ public class Main
 			  localStore.add(typeLink,"RDF2Graph:forwardMultiplicity",this.getMultiplicity(dest.forwardMinMultiplicity,dest.forwardMaxMultiplicity));
 			  localStore.add(typeLink,"RDF2Graph:reverseMultiplicity",this.getMultiplicity(dest.reverseMinMultiplicity,dest.reverseMaxMultiplicity));
 			  //note them as new so they do not get deleted
-			  localStore.add(classProperty,"RDF2Graph:noteAsNew","new");
+			  localStore.addLit(classProperty,"RDF2Graph:noteAsNew","new");
 			  
 			  if(typeName.equals(localStore.expand("RDF2Graph:invalid")))
 			  {

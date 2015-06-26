@@ -11,5 +11,7 @@
 /owlExporter/outputs
 /rdfExporter/outputs
 /src/main/java/nl/wur/ssb/RDF2Graph/MainJesse.java
+/RDFSimpleCon
+RDF2Graph.jar
 .classpath
 .project

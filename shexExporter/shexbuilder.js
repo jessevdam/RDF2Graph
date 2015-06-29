@@ -97,12 +97,12 @@ function loadJSON_ld(file,callback)
   });
 }
 
-loadJSON_ld(__dirname + "/temp/result.json",  function (err, data) {
+loadJSON_ld("temp/result.json",  function (err, data) {
   if (err) {
     console.log('Error: ' + err);
     return;
   }
-  var fn = jade.compileFile('shex.jade');
+  var fn = jade.compileFile(__dirname + '/shex.jade');
   //console.dir(data[0].class);
   var html = fn({"data":  data[0], "_":_ ,"lib":lib} );
   fs.writeFile("temp/out.html", html, function(err) {

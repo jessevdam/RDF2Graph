@@ -2,6 +2,8 @@ package nl.wur.ssb.RDF2Graph.owlExporter;
 
 import java.util.HashSet;
 
+import org.apache.log4j.BasicConfigurator;
+
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -16,6 +18,7 @@ public class Main
 	private Model model;
 	public static void main(String args[])
 	{
+		BasicConfigurator.configure();
 		new Main(args);
 	}
 	public Main(String args[])

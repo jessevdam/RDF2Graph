@@ -49,7 +49,7 @@ public class Main
 	private boolean treatSubClassOfAsIntanceOf = false;
 	private boolean removeOWLClasses = false;
 	private boolean eachThreadOnePort = false;
-	private boolean useClassPredFindAtOnce = false;
+	private boolean useClassPropertyRecoveryPerClass = false;
 	private int numberOfThreads = 1;
 	private HashMap<String,LinkedList<String>> keepUniq = new HashMap<String,LinkedList<String>>(); 
 
@@ -110,8 +110,8 @@ public class Main
       		main.removeOWLClasses = true;
       	else if(enProp.equals("eachThreadOnePort"))
       		main.eachThreadOnePort = true;    	  
-      	else if(enProp.equals("useClassPredFindAtOnce"))
-      		main.useClassPredFindAtOnce = true;
+      	else if(enProp.equals("useClassPropertyRecoveryPerClass"))
+      		main.useClassPropertyRecoveryPerClass = true;
       	else if(enProp.equals("multiThread"))
       	{
       		try
@@ -146,7 +146,7 @@ public class Main
 		}
 	  else
 	  {	  
-	  	System.out.println("usage: java -jar RDF2Graph.jar <output directory> (<user>:<pass>@)?<uri of sparql endpoint>([<uri of graph>])? --multiThread <numofthreads> --eachThreadOnePort --collectPredicateStatistics --collectClassStatistics --collectShapePropertyStatistics --checkPredicateSourceClass --collectForwardMultiplicity --collectReverseMultiplicity --executeSimplify --treatSubClassOfAsIntanceOf --removeOWLClasses");
+	  	System.out.println("usage: java -jar RDF2Graph.jar <output directory> (<user>:<pass>@)?<uri of sparql endpoint>([<uri of graph>])? --multiThread <numofthreads> --eachThreadOnePort --collectPredicateStatistics --collectClassStatistics --collectShapePropertyStatistics --checkPredicateSourceClass --collectForwardMultiplicity --collectReverseMultiplicity --executeSimplify --treatSubClassOfAsIntanceOf --removeOWLClasses --useClassPropertyRecoveryPerClass");
 	  	System.out.println("example usage: java -jar RDF2Graph.jar <output directory> <admin:mypass@http://myserver:8080/db/query[http://example.com/basegraph] --multiThread 4 --collectPredicateStatistics --collectClassStatistics --collectForwardMultiplicity --executeSimplify");
 	    System.out.println("Please see RDF2Graph manual for more details");
 	  }
@@ -272,7 +272,7 @@ public class Main
 				  reconstructClass(clazz);
 				});
 			
-				if(useClassPredFindAtOnce)
+				if(!useClassPropertyRecoveryPerClass)
 				{
 				  // * 5.2 collect for the specific class used predicate
 				  // Get for this class all the outward going predicates (aka classProperty)
@@ -410,7 +410,7 @@ public class Main
 		}
 
 		
-		if(!useClassPredFindAtOnce)
+		if(useClassPropertyRecoveryPerClass)
 		{
 		  // * 5.2 collect for the specific class used predicate
 		  // Get for this class all the outward going predicates (aka classProperty)

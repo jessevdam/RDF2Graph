@@ -5,13 +5,13 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rs: <http://open-services.net/ns/core#>		
 
 #remove all the temporary marks
-WITH <http://ssb.wur.nl/RDF2Graph/>
+#WITH <http://ssb.wur.nl/RDF2Graph/>
 #FROM <http://ssb.wur.nl/RDF2Graph/> 
 DELETE
 {
   ?shapeProp RDF2Graph:noteAsNew ?value .
 }
-USING <http://ssb.wur.nl/RDF2Graph/>
+#USING <http://ssb.wur.nl/RDF2Graph/>
 WHERE
 {
   ?shapeProp RDF2Graph:noteAsNew ?value .

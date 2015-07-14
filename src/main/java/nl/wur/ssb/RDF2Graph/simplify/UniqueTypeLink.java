@@ -1,6 +1,6 @@
 package nl.wur.ssb.RDF2Graph.simplify;
 
-public class ShapeProperty
+public class UniqueTypeLink
 {
 	public String typeName;
 	public int count;
@@ -9,7 +9,7 @@ public class ShapeProperty
   public int reverseMinMultiplicity;
   public int reverseMaxMultiplicity;
 	
-	public ShapeProperty(String destName,int count,int forwardMinMultiplicity,int forwardMaxMultiplicity,int reverseMinMultiplicity,int reverseMaxMultiplicity)
+	public UniqueTypeLink(String destName,int count,int forwardMinMultiplicity,int forwardMaxMultiplicity,int reverseMinMultiplicity,int reverseMaxMultiplicity)
 	{
 		this.typeName = destName;
 	  this.count = count;
@@ -19,7 +19,7 @@ public class ShapeProperty
 	  this.reverseMaxMultiplicity = reverseMaxMultiplicity;
 	}
 	
-	public void combineWith(ShapeProperty other,String newDestName)
+	public void combineWith(UniqueTypeLink other,String newDestName)
 	{
 		this.typeName = newDestName;
 		this.count += other.count;

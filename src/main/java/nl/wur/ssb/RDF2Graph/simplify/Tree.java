@@ -16,32 +16,32 @@ public class Tree
 
   }
   
-  public void prepareDestType()
+  public void prepTemporaryLinks()
   {
   	for(TreeNode node : nodes.values())
   	{
-  		node.prepareDestType();
+  		node.prepTemporaryLinks();
   	}
   }
   
-  public void projectDownStep1() throws Exception
+  public void simplifyStep2() throws Exception
   {
-  	this.root.projectDownStep1(new HashSet<TreeNode>());
+  	this.root.simplifyStep2(new HashSet<TreeNode>());
   }
   
-  public void projectDownStep2()
+  public void simplifyStep3()
   {
   	LinkedList<TreeNode> todo = new LinkedList<TreeNode>();
-  	todo.addAll(this.root.projectDownStep2());
+  	todo.addAll(this.root.simplifyStep3());
   	while(!todo.isEmpty())
   	{
-  		todo.addAll(todo.removeFirst().projectDownStep2()); 	
+  		todo.addAll(todo.removeFirst().simplifyStep3()); 	
   	}
   }
   
-  public void projectDownStep3()
+  public void simplifyStep4()
   {
-		this.root.projectDownStep3(new HashSet<ShapeProperty>());
+		this.root.simplifyStep4(new HashSet<UniqueTypeLink>());
   }
   
   public TreeNode getNode(String node)
@@ -91,12 +91,12 @@ public class Tree
   	root.calculateSubClassOfIntanceOfCount(new HashMap<String,Integer>());
   }
   
-  public String findCommonParent(String node1,String node2)
+  public String findSharedType(String type1,String type2)
   {
-  	if(node1.equals(node2))
-  		return node1;
-  	TreeNode treeNode1 = this.getNode(node1);
-  	TreeNode treeNode2 = this.getNode(node2);
+  	if(type1.equals(type2))
+  		return type1;
+  	TreeNode treeNode1 = this.getNode(type1);
+  	TreeNode treeNode2 = this.getNode(type2);
   	if(treeNode1 == null || treeNode2 == null)
   		return null;
   	//reset the state
@@ -112,7 +112,7 @@ public class Tree
   }
   
   //Check if child is child of parent
-  boolean isParentOf(String parent,String child)
+  boolean isChildOf(String parent,String child)
   {
   	if(parent.equals(child))
   		return true;

@@ -18,11 +18,11 @@ public class TreeNode
 	/*identify root node */
 	private boolean isRoot;
 	/*The temporary field used in the algoritm*/
-	private HashMap<String,ShapeProperty> prepDestTypes = new HashMap<String,ShapeProperty>();
-	private HashSet<ShapeProperty> destTypes = new HashSet<ShapeProperty>();
+	private HashMap<String,UniqueTypeLink> temporaryLinksPrepMap = new HashMap<String,UniqueTypeLink>();
+	private HashSet<UniqueTypeLink> temporaryLinks = new HashSet<UniqueTypeLink>();
 	private int markParent;
-	private boolean projectStep1Done = false;
-	private boolean projectStep2Done = false;
+	private boolean simplifyStep2Done = false;
+	private boolean simplifyStep3Done = false;
 	private int subClassOffInstanceCount = -2;
 	private int classInstanceCount = -2; 
 
@@ -73,13 +73,13 @@ public class TreeNode
   	this.parents.add(parent);
   	parent.childs.add(this);
   }
-  public void addType(String name,int count,int forwardMinMultiplicity,int forwardMaxMultiplicity,int reverseMinMultiplicity,int reverseMaxMultiplicity)
+  public void addTemporaryLink(String name,int count,int forwardMinMultiplicity,int forwardMaxMultiplicity,int reverseMinMultiplicity,int reverseMaxMultiplicity)
   {
   	if(this.isRoot)
   		return;
-  	if(!this.destTypes.contains(name))
+  	if(!this.temporaryLinks.contains(name))
   	{
-  	  this.prepDestTypes.put(name,new ShapeProperty(name,count,forwardMinMultiplicity,forwardMaxMultiplicity,reverseMinMultiplicity,reverseMaxMultiplicity));
+  	  this.temporaryLinksPrepMap.put(name,new UniqueTypeLink(name,count,forwardMinMultiplicity,forwardMaxMultiplicity,reverseMinMultiplicity,reverseMaxMultiplicity));
   	}
   }
   void calculateSubClassOfIntanceOfCount(HashMap<String,Integer> countSet)
@@ -110,56 +110,56 @@ public class TreeNode
 	  }
   }
   
-  public void prepareDestType()
+  public void prepTemporaryLinks()
   {
-  	this.destTypes.addAll(this.prepDestTypes.values());
+  	this.temporaryLinks.addAll(this.temporaryLinksPrepMap.values());
   }
   
-  public ShapeProperty[] getResDestTypes()
+  public UniqueTypeLink[] getTemporaryLinks()
   {
-  	return (ShapeProperty[])this.destTypes.toArray(new ShapeProperty[0]);
+  	return (UniqueTypeLink[])this.temporaryLinks.toArray(new UniqueTypeLink[0]);
   }
   
   void clean()
   {
-  	this.prepDestTypes.clear();
-  	destTypes.clear();
-  	projectStep1Done = false;
-  	projectStep2Done = false;
+  	this.temporaryLinksPrepMap.clear();
+  	temporaryLinks.clear();
+  	simplifyStep2Done = false;
+  	simplifyStep3Done = false;
   	markParent = 0;
   }
   //Combine from upper level to lower level
-  void projectDownStep1(HashSet<TreeNode> visited) throws Exception
+  void simplifyStep2(HashSet<TreeNode> visited) throws Exception
   {
-  	if(projectStep1Done)
+  	if(simplifyStep2Done)
   		return;
-  	projectStep1Done = true;
+  	simplifyStep2Done = true;
   	if(visited.contains(this))
   		throw new Exception("cycle in rdfs:subClassOf hiearchy found");
   	visited.add(this);
   	for(TreeNode child : this.childs)
   	{
-  		child.projectDownStep1(visited);
+  		child.simplifyStep2(visited);
   		if(this.isRoot)
   			continue;
-  		this.destTypes.addAll(child.destTypes);
+  		this.temporaryLinks.addAll(child.temporaryLinks);
    	}
  		boolean changed = true;
 		outer:while(changed)
 		{
 			changed = false;
-		  for(ShapeProperty dest1 : destTypes)
+		  for(UniqueTypeLink link1 : temporaryLinks)
 		  {
-		  	for(ShapeProperty dest2 : destTypes)
+		  	for(UniqueTypeLink link2 : temporaryLinks)
 			  {
-		  		if(dest1 == dest2)
+		  		if(link1 == link2)
 		  			continue;
-				  String common = tree.findCommonParent(dest1.typeName,dest2.typeName);
+				  String common = tree.findSharedType(link1.typeName,link2.typeName);
 				  if(common != null)
 				  {
 				  	//destTypes.remove(dest1);
-				  	destTypes.remove(dest2);  				 
-				  	dest1.combineWith(dest2,common);
+				  	temporaryLinks.remove(link2);  				 
+				  	link1.combineWith(link2,common);
 				  	//destTypes.add(dest1);
 				  	changed = true;
 				  	continue outer;
@@ -170,27 +170,27 @@ public class TreeNode
   	visited.remove(this);
   }
   //Remove 'none splitting' elements
-  LinkedList<TreeNode> projectDownStep2() 
+  LinkedList<TreeNode> simplifyStep3() 
   {
   	//If one of the parents is not processed yet then re-add it to the end of the list
   	for(TreeNode parent : this.parents)
   	{
-  		if(parent.projectStep2Done == false)
+  		if(parent.simplifyStep3Done == false)
   		{
   			LinkedList<TreeNode> toRet = new LinkedList<TreeNode>();
   			toRet.add(this);
   			return toRet;
   		}
   	}
-  	LinkedList<ShapeProperty> toRemove = new LinkedList<ShapeProperty>();
-    for(ShapeProperty dest : destTypes)
+  	LinkedList<UniqueTypeLink> toRemove = new LinkedList<UniqueTypeLink>();
+    for(UniqueTypeLink dest : temporaryLinks)
     {
     	int count = 0;
       for(TreeNode child : this.childs)
       {
-      	for(ShapeProperty destChild : child.destTypes)
+      	for(UniqueTypeLink destChild : child.temporaryLinks)
       	{
-      		if(this.tree.isParentOf(dest.typeName,destChild.typeName))
+      		if(this.tree.isChildOf(dest.typeName,destChild.typeName))
       			count++;
       	}
       }
@@ -199,31 +199,31 @@ public class TreeNode
       	toRemove.add(dest);
       }
     }
-    this.destTypes.removeAll(toRemove);
-    this.projectStep2Done = true;
+    this.temporaryLinks.removeAll(toRemove);
+    this.simplifyStep3Done = true;
     return this.childs;
   }
   //Remove element that are already referenced by parent node
-  void projectDownStep3(HashSet<ShapeProperty> parentsContents) 
+  void simplifyStep4(HashSet<UniqueTypeLink> parentsContents) 
   {
-  	LinkedList<ShapeProperty> toRemove = new LinkedList<ShapeProperty>();
-    for(ShapeProperty dest : destTypes)
+  	LinkedList<UniqueTypeLink> toRemove = new LinkedList<UniqueTypeLink>();
+    for(UniqueTypeLink dest : temporaryLinks)
     {
-    	for(ShapeProperty parentContent : parentsContents)
+    	for(UniqueTypeLink parentContent : parentsContents)
     	{
-    		if(tree.isParentOf(parentContent.typeName,dest.typeName))
+    		if(tree.isChildOf(parentContent.typeName,dest.typeName))
     		{
     			toRemove.add(dest);
     			break;
     		}
     	}
     } 	
-    this.destTypes.removeAll(toRemove);
-    HashSet<ShapeProperty> copy = (HashSet<ShapeProperty>)parentsContents.clone();
-    copy.addAll(this.destTypes);
+    this.temporaryLinks.removeAll(toRemove);
+    HashSet<UniqueTypeLink> copy = (HashSet<UniqueTypeLink>)parentsContents.clone();
+    copy.addAll(this.temporaryLinks);
   	for(TreeNode child : this.childs)
   	{
-  	  child.projectDownStep3(copy);
+  	  child.simplifyStep4(copy);
   	}  
   }
   

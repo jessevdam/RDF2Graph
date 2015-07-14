@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import nl.wur.ssb.RDF2Graph.simplify.ShapeProperty;
+import nl.wur.ssb.RDF2Graph.simplify.UniqueTypeLink;
 import nl.wur.ssb.RDF2Graph.simplify.Tree;
 import nl.wur.ssb.RDF2Graph.simplify.TreeNode;
 import nl.wur.ssb.RDFSimpleCon.RDFSimpleCon;
@@ -19,8 +19,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
@@ -55,6 +56,7 @@ public class Main
 	public static void main(String args[]) throws Exception
 	{
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.WARN);
 		Main main = new Main();
 
 		boolean ok = true;
@@ -212,7 +214,6 @@ public class Main
 						localStore.add(pred,"rdf:type","rdf:Property");
 					}
 				}	  
-				
 			  // 2. count for each predicate how often it occurs
 				if(collectPredicateStatistics)
 				{			  
@@ -308,9 +309,12 @@ public class Main
 		  this.includeStaticDefs();
 		  
 		  //These steps has always to be executed
-	    //Step 7.1 Mark instantiated classes and in between classes
+	    //Step 7.1 Mark classes with some instances and classes that have subclasses with some instances
 	  	runUpdateQueryOnce(localStore,"clean2_project1.txt");
 	  	runUpdateQueryOnce(localStore,"clean2_project2.txt");
+		  //Step 7.2 Mark all concept classes
+		  runUpdateQueryOnce(localStore,"clean8_insertConceptClasses1.txt");		
+		  runUpdateQueryOnce(localStore,"clean8_insertConceptClasses2.txt");
 		  //7. The cleaning phase
 		  if(executeSimplify && !(status.stepDone("executeSimplify")))
 		  {
@@ -545,8 +549,6 @@ public class Main
 		  System.out.println("Getting maximum forward multiplicity");
 		  int max = 0;
 		  int min = 1;
-		  if(clazz.equals("http://vocabularies.wikipathways.org/gpml#Interaction") && predicate.equals("http://vocabularies.wikipathways.org/gpml#linethickness"))
-		  	System.out.println("ok");
 		  for (ResultLine item : this.runRemoteQuery(remoteGraph1,"getShapePropertyForwardMaxMultiplicity_" + suffix + ".txt",clazz,predicate,toType))
 		  {
 			  max = item.getLitInt("max");
@@ -671,20 +673,17 @@ public class Main
 	  for (ResultLine item : this.runLocalQuery(localStore,true,"clean4_getAllProps.txt"))
   	{
 		  String property = item.getIRI("property");
-	    cleanForProperty(tree,property);
+	    simplifyForProperty(tree,property);
 	  }
 	  //Step 7.5
 	  runUpdateQueryOnce(localStore,"clean6_removeAllShapeProps1.txt");
 	  runUpdateQueryOnce(localStore,"clean7_removeAllShapeProps2.txt");
-	  //Step 7.6
-	  runUpdateQueryOnce(localStore,"clean8_insertConceptClasses1.txt");		
-	  runUpdateQueryOnce(localStore,"clean8_insertConceptClasses2.txt");
 	}
 	
-	private void cleanForProperty(Tree tree,String property) throws Exception
+	private void simplifyForProperty(Tree tree,String property) throws Exception
 	{
-		//step 7.4.1
-		System.out.println("performing cleaning for property: " + property);
+		//step 7.4.1: Step 1 of simplification process
+		System.out.println("performing simplification for property: " + property);
 		System.out.println("loading property information into the tree");
 		for (ResultLine item : this.runLocalQuery(localStore,true,"clean5_getAllShapeProps.txt",property))
 		{
@@ -701,36 +700,36 @@ public class Main
 				System.out.println("source node not found: " + source);
 				sourceNode = tree.createMissingNode(source,tree);
 			}
-			sourceNode.addType(type,count,this.getMin(forwardMultiplicity),this.getMax(forwardMultiplicity),this.getMin(reverseMultiplicity),this.getMax(reverseMultiplicity));				
+			sourceNode.addTemporaryLink(type,count,this.getMin(forwardMultiplicity),this.getMax(forwardMultiplicity),this.getMin(reverseMultiplicity),this.getMax(reverseMultiplicity));				
 		}		
-		tree.prepareDestType();
-		printShapeProps(tree);
+		tree.prepTemporaryLinks();
+		printTemporaryLinks(tree);
 		//step 7.4.2
 		System.out.println("step 1");
 		if(property.equals("http://ssb.wur.nl/RDF2Graph/rdfProperty"))
 			System.out.println("debug");
-		tree.projectDownStep1();
-		printShapeProps(tree);
+		tree.simplifyStep2();
+		printTemporaryLinks(tree);
 	  //step 7.4.3
 		System.out.println("step 2");
-		tree.projectDownStep2();
-		printShapeProps(tree);
+		tree.simplifyStep3();
+		printTemporaryLinks(tree);
 	  //step 7.4.4
 		System.out.println("step 3");
-		tree.projectDownStep3();
-		printShapeProps(tree);
+		tree.simplifyStep4();
+		printTemporaryLinks(tree);
 		//write new properties to database
 		//step 7.4.5
-		storeShapeProps(tree,property);
+		storeNewUniqueTypeLinks(tree,property);
 		System.out.println("clean tree");
 		tree.clean();
 	}
 	
-	private void printShapeProps(Tree tree)
+	private void printTemporaryLinks(Tree tree)
 	{
 		for(TreeNode node : tree.getAllNodes())
 		{
-			for(ShapeProperty dest : node.getResDestTypes())
+			for(UniqueTypeLink dest : node.getTemporaryLinks())
 			{
 				System.out.println(node.name + " ---> " + dest.typeName);
 			}
@@ -751,12 +750,12 @@ public class Main
 		}
 	}
 	
-	private void storeShapeProps(Tree tree,String predicate) throws Exception
+	private void storeNewUniqueTypeLinks(Tree tree,String predicate) throws Exception
 	{
 		int count = 1;
 		for(TreeNode node : tree.getAllNodes())
 		{
-			for(ShapeProperty dest : node.getResDestTypes())
+			for(UniqueTypeLink dest : node.getTemporaryLinks())
 			{
 				String sourceType = node.name;
 				String typeName = dest.typeName;

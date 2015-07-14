@@ -13,10 +13,9 @@ SELECT DISTINCT ?child2 ?subclass ?parent2
 FROM <http://ssb.wur.nl/RDF2Graph/>
 WHERE
 {
+#  ?child a RDF2Graph:ConceptClass .
   ?child rdfs:subClassOf ?parent .
-  #any of the (super)parents has a class property
-  ?parent a RDF2Graph:Class .
-  ?child a RDF2Graph:Class .
+#  ?parent a RDF2Graph:ConceptClass .
   FILTER(?parent != owl:Thing)
   BIND("subClassOf" as ?subclass) 
   BIND (str(?child) as ?child2)

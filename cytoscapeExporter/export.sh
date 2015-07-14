@@ -8,15 +8,15 @@ echo "Export script is tested on cytoscape version 3.2"
 echo "TIP: use the scale function in Cytoscape to improve the readability of the view of the network"
 echo "TIP: enable graphical details, so edge names are always shown"
 project=$1 
-keep=$2
+includeConcepts=$2
 output=$3
-if [[ "$1" = "-h" ||  "$1" = "--help"  || ( "$keep" != "true"  &&  "$keep" != "false") || ("$output" != "view" && "$output" != *".cys" && "$output" != *".xgmml") ]] ; then
+if [[ "$1" = "-h" ||  "$1" = "--help"  || ( "$includeConcepts" != "true"  &&  "$includeConcepts" != "false") || ("$output" != "view" && "$output" != *".cys" && "$output" != *".xgmml") ]] ; then
   echo "usage"
-  echo "export.sh <project> <keep> <output>"
+  echo "export.sh <project> <include concept classes> <output>"
   echo "output -> 'view' opens cytoscape view"
   echo "output -> '*.cys' saves cytoscape session file to file"
   echo "output -> '*.xgmml' saves network to file and save error report to *_error.xgmml"
-  echo "keep only (true or false) all sub classes that have some instances defined in the original dataset" 
+  echo "include concept classes -> also include all concept classes in the view (true or false)" 
   exit
 fi
 
@@ -42,8 +42,8 @@ tdbquery --loc $project --query $DIR/queries/primarylinks.txt --results TSV |  s
 tdbquery --loc $project --query $DIR/queries/secondarylinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
 tdbquery --loc $project --query $DIR/queries/subClassOffByDefLinks1.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
 tdbquery --loc $project --query $DIR/queries/subClassOffByDefLinks2.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
-if [ "$keep" = "true" ] ; then
-  tdbquery --loc $project --query $DIR/queries/subClassOfLinksKeepAll.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
+if [ "$includeConcepts" = "true" ] ; then
+  tdbquery --loc $project --query $DIR/queries/subClassOfLinksIncludeConceptsClasses.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
 else
   tdbquery --loc $project --query $DIR/queries/subClassOfLinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
 fi

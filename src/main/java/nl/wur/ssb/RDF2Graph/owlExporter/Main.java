@@ -3,6 +3,8 @@ package nl.wur.ssb.RDF2Graph.owlExporter;
 import java.util.HashSet;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -19,6 +21,7 @@ public class Main
 	public static void main(String args[])
 	{
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.WARN);
 		new Main(args);
 	}
 	public Main(String args[])

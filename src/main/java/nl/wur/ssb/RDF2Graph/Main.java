@@ -47,7 +47,7 @@ public class Main
 	private boolean collectReverseMultiplicity = false;
 	private boolean executeSimplify = false; 
 	private boolean treatSubClassOfAsIntanceOf = false;
-	private boolean keepOWLClasses = false;
+	private boolean removeOWLClasses = false;
 	private boolean eachThreadOnePort = false;
 	private boolean useClassPredFindAtOnce = false;
 	private int numberOfThreads = 1;
@@ -106,8 +106,8 @@ public class Main
       		main.executeSimplify = true;
       	else if(enProp.equals("treatSubClassOfAsIntanceOf"))
       		main.treatSubClassOfAsIntanceOf = true;      
-      	else if(enProp.equals("keepOWLClasses"))
-      		main.keepOWLClasses = true;
+      	else if(enProp.equals("removeOWLClasses"))
+      		main.removeOWLClasses = true;
       	else if(enProp.equals("eachThreadOnePort"))
       		main.eachThreadOnePort = true;    	  
       	else if(enProp.equals("useClassPredFindAtOnce"))
@@ -146,7 +146,7 @@ public class Main
 		}
 	  else
 	  {	  
-	  	System.out.println("usage: java -jar RDF2Graph.jar <output directory> (<user>:<pass>@)?<uri of sparql endpoint>([<uri of graph>])? --multiThread <numofthreads> --eachThreadOnePort --collectPredicateStatistics --collectClassStatistics --collectShapePropertyStatistics --checkPredicateSourceClass --collectForwardMultiplicity --collectReverseMultiplicity --executeSimplify --treatSubClassOfAsIntanceOf --keepOWLClasses");
+	  	System.out.println("usage: java -jar RDF2Graph.jar <output directory> (<user>:<pass>@)?<uri of sparql endpoint>([<uri of graph>])? --multiThread <numofthreads> --eachThreadOnePort --collectPredicateStatistics --collectClassStatistics --collectShapePropertyStatistics --checkPredicateSourceClass --collectForwardMultiplicity --collectReverseMultiplicity --executeSimplify --treatSubClassOfAsIntanceOf --removeOWLClasses");
 	  	System.out.println("example usage: java -jar RDF2Graph.jar <output directory> <admin:mypass@http://myserver:8080/db/query[http://example.com/basegraph] --multiThread 4 --collectPredicateStatistics --collectClassStatistics --collectForwardMultiplicity --executeSimplify");
 	    System.out.println("Please see RDF2Graph manual for more details");
 	  }
@@ -352,7 +352,7 @@ public class Main
 	
 	private void cleanOWL()
 	{
-	  if(!this.keepOWLClasses)
+	  if(this.removeOWLClasses)
 	  {
 	  	System.out.println("cleaning OWL classes");
 	  	localStore.runUpdateQuery("cleanOWL.txt");

@@ -53,7 +53,11 @@ echo -e "name\thide" > ./temp/nodeprops.txt
 echo -e "ErrorReportHidden\thide" >> ./temp/nodeprops.txt
 tdbquery --loc $project --query $DIR/queries/hideSecondaryLinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/nodeprops.txt 
 echo -e "shared name\tname\tcount\tchild instance count\tfull iri" > ./temp/nodeprops2.txt 
-tdbquery --loc $project --query $DIR/queries/getnodeproperties.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/nodeprops2.txt 
+if [ "$includeConcepts" = "true" ] ; then
+  tdbquery --loc $project --query $DIR/queries/getnodepropertiesIncludeConceptClasses.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/nodeprops2.txt 
+else
+  tdbquery --loc $project --query $DIR/queries/getnodeproperties.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/nodeprops2.txt 
+fi
 echo -e "shared name\tsource\tpredicate name\tdestination type\tforward multiplicity\treverse multiplicity\treference count\tis_simple\tfull predicate" > ./temp/edgeprops.txt 
 tdbquery --loc $project --query $DIR/queries/getedgeproperties.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/edgeprops.txt 
 #error report generation

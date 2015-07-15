@@ -1,0 +1,57 @@
+#PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+#PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+#PREFIX owl: <http://www.w3.org/2002/07/owl#>
+#PREFIX rs: <http://open-services.net/ns/core#>		
+
+#remove any classes that have no class prop and are not referenced by something
+#WITH <http://ssb.wur.nl/RDF2Graph/>
+#USING <http://ssb.wur.nl/RDF2Graph/>
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+DELETE
+{
+  ?class a RDF2Graph:Class .
+  ?class RDF2Graph:count ?count .
+  ?class RDF2Graph:subClassOfInstanceCount ?subCount .
+  ?class rdfs:subClassOf ?parent .
+}
+#SELECT *
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+WHERE
+{
+  ?class a RDF2Graph:Class .
+  FILTER(regex(str(?class),"http://www.w3.org/2002/07/owl#.*") || regex(str(?class),"http://www.w3.org/2000/01/rdf-schema#.*")  || regex(str(?class),"http://www.w3.org/1999/02/22-rdf-syntax-ns#.*"))  
+  #Only keep the owl:Class itself
+  FILTER NOT EXISTS
+  {
+    ?class RDF2Graph:property ?classProp .
+    ?classProp a RDF2Graph:ClassProperty .
+  }
+  FILTER NOT EXISTS
+  {
+    ?typeLink RDF2Graph:type ?class .
+    ?typeLink a RDF2Graph:TypeLink .
+  }
+  FILTER NOT EXISTS
+  {
+    ?class RDF2Graph:error ?error .
+  }
+  FILTER NOT EXISTS
+  {
+    ?child rdfs:subClassOf ?class .
+  }
+  OPTIONAL
+  {
+    ?class RDF2Graph:count ?count .
+  }
+  OPTIONAL
+  {
+    ?class RDF2Graph:subClassOfInstanceCount ?subCount .
+  }
+  OPTIONAL
+  {  
+    ?class rdfs:subClassOf ?parent .
+  }
+}
+
+

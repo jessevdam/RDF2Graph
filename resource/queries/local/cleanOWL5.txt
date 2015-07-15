@@ -1,0 +1,33 @@
+#PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+#PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+#PREFIX owl: <http://www.w3.org/2002/07/owl#>
+#PREFIX rs: <http://open-services.net/ns/core#>		
+
+#remove any dest error object that has no type link anymore
+#WITH <http://ssb.wur.nl/RDF2Graph/>
+#USING <http://ssb.wur.nl/RDF2Graph/>
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+DELETE
+{
+  ?predicate a rdf:Property .
+  ?predicate RDF2Graph:count ?count .
+}
+#SELECT *
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+WHERE
+{
+  ?predicate a rdf:Property .
+  FILTER(regex(str(?predicate),"http://www.w3.org/2002/07/owl#.*") || regex(str(?predicate),"http://www.w3.org/2000/01/rdf-schema#.*"))  
+
+  FILTER NOT EXISTS
+  {
+    ?classprop RDF2Graph:rdfProperty ?predicate .
+  }
+  OPTIONAL 
+  {
+    ?predicate RDF2Graph:count ?count .
+  }
+}
+
+

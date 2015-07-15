@@ -355,8 +355,11 @@ public class Main
 	  if(this.removeOWLClasses)
 	  {
 	  	System.out.println("cleaning OWL classes");
-	  	localStore.runUpdateQuery("cleanOWL.txt");
+	  	localStore.runUpdateQuery("cleanOWL1.txt");
 	  	localStore.runUpdateQuery("cleanOWL2.txt");
+	  	localStore.runUpdateQuery("cleanOWL3.txt");
+	  	localStore.runUpdateQuery("cleanOWL4.txt");
+	  	localStore.runUpdateQuery("cleanOWL5.txt");
 	  }
 	}
 	

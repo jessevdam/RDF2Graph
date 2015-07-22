@@ -368,6 +368,8 @@ public class Main
 		this.localStore.add("RDF2Graph:Class","rdfs:subClassOf","RDF2Graph:Type");
 		this.localStore.add("RDF2Graph:Class","rdf:type","owl:Class");
 		this.localStore.add("RDF2Graph:ConceptClass","rdf:type","owl:Class");
+		this.localStore.add("RDF2Graph:Class","rdfs:subClassOf","rdfs:Class");
+		this.localStore.add("RDF2Graph:ConceptClass","rdfs:subClassOf","rdfs:Class");
 		this.localStore.add("RDF2Graph:Type","rdf:type","owl:Class");
 		this.localStore.add("RDF2Graph:invalid","rdf:type","RDF2Graph:Invalid");
 		this.localStore.add("RDF2Graph:Invalid","rdfs:subClassOf","RDF2Graph:Type");

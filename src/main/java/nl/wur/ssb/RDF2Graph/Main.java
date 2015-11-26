@@ -355,11 +355,11 @@ public class Main
 	  if(this.removeOWLClasses)
 	  {
 	  	System.out.println("cleaning OWL classes");
-	  	localStore.runUpdateQuery("cleanOWL1.txt");
-	  	localStore.runUpdateQuery("cleanOWL2.txt");
-	  	localStore.runUpdateQuery("cleanOWL3.txt");
-	  	localStore.runUpdateQuery("cleanOWL4.txt");
-	  	localStore.runUpdateQuery("cleanOWL5.txt");
+	  	localStore.runUpdateQuery("local/cleanOWL1.txt");
+	  	localStore.runUpdateQuery("local/cleanOWL2.txt");
+	  	localStore.runUpdateQuery("local/cleanOWL3.txt");
+	  	localStore.runUpdateQuery("local/cleanOWL4.txt");
+	  	localStore.runUpdateQuery("local/cleanOWL5.txt");
 	  }
 	}
 	
@@ -850,7 +850,7 @@ public class Main
 	  if(!graph.containsLit("RDF2Graph:status","RDF2Graph:updatePerformed",file))
 	 	{
 	  	System.out.println("running update query " + file);
-	  	graph.runUpdateQuery(file,args);
+	  	graph.runUpdateQuery("local/" + file,args);
 	  	graph.addLit("RDF2Graph:status","RDF2Graph:updatePerformed",file);
 	 	}
 	}

@@ -20,4 +20,4 @@ WHERE
   BIND(DATATYPE(?target) as ?xsdType)
   #}
 }
-LIMIT 1000
+LIMIT 100000

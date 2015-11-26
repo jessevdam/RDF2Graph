@@ -262,6 +262,11 @@ public class Main
 					//Skip owl:Class and rdfs:Class if we treat subClassOf as instanceOf
 					if(this.treatSubClassOfAsIntanceOf && (clazz.equals("http://www.w3.org/2002/07/owl#Class") || clazz.equals("http://www.w3.org/2000/01/rdf-schema#Class")))
 					  continue;
+					if(clazz == null)
+					{
+						System.out.println("Skipping class which is a blank node");
+						continue;
+					}
 				  System.out.println("class: " + clazz);
 					localStore.add(clazz,"rdf:type","RDF2Graph:Class");
 				}
@@ -282,6 +287,11 @@ public class Main
 				  	String pred = item.getIRI("pred");
 				  	if (this.filterPredicate(pred))
 				  	{
+				  		return;
+				  	}
+				  	if(clazz == null)
+				  	{
+				  		System.out.println("Skipping proper of a class which is a blank node");
 				  		return;
 				  	}
 					  reconstructClassProperty(clazz,pred);
@@ -712,8 +722,6 @@ public class Main
 		printTemporaryLinks(tree);
 		//step 7.4.2
 		System.out.println("step 1");
-		if(property.equals("http://ssb.wur.nl/RDF2Graph/rdfProperty"))
-			System.out.println("debug");
 		tree.simplifyStep2();
 		printTemporaryLinks(tree);
 	  //step 7.4.3

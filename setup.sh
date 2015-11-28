@@ -1,4 +1,5 @@
 git clone https://github.com/jessevdam/RDFSimpleCon
+git pullcd 
 cd RDFSimpleCon
 mvn install
 cd ..

@@ -82,11 +82,32 @@ public class TreeNode
   	  this.temporaryLinksPrepMap.put(name,new UniqueTypeLink(name,count,forwardMinMultiplicity,forwardMaxMultiplicity,reverseMinMultiplicity,reverseMaxMultiplicity));
   	}
   }
+  public void breakLoops(HashSet<TreeNode> seen)
+  {
+  	seen.add(this);
+  	LinkedList<TreeNode> toRemove = new LinkedList<TreeNode>();
+  	for(TreeNode child : this.childs)
+  	{
+  		if(seen.contains(child))
+  		{
+  			System.out.println("LOOP in the class tree detected: " + child.name + " --> " + this.name + " | removing link to fix");
+  			toRemove.add(child);
+  			child.parents.remove(this);
+  		}
+  		else
+  		{
+  		  child.breakLoops(seen);
+  		}
+  	}
+  	this.childs.removeAll(toRemove);
+  }
+  
   void calculateSubClassOfIntanceOfCount(HashMap<String,Integer> countSet)
   {
   	if(this.subClassOffInstanceCount == -2)
   	{
   	  HashMap<String,Integer> myCountSet = new HashMap<String,Integer>();
+  	  System.out.println(this.name);
   	  for(TreeNode child : this.childs)
   	  {
         child.calculateSubClassOfIntanceOfCount(myCountSet);

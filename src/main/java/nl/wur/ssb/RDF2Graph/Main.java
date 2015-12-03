@@ -320,16 +320,17 @@ public class Main
 		  
 		  //These steps has always to be executed
 	    //Step 7.1 Mark classes with some instances and classes that have subclasses with some instances
-	  	runUpdateQueryOnce(localStore,"clean2_project1.txt");
-	  	runUpdateQueryOnce(localStore,"clean2_project2.txt");
+	  	runUpdateQueryOnce(localStore,"finalize1_addRDF2GraphClass.txt");
 		  //Step 7.2 Mark all concept classes
-		  runUpdateQueryOnce(localStore,"clean8_insertConceptClasses1.txt");		
-		  runUpdateQueryOnce(localStore,"clean8_insertConceptClasses2.txt");
+		  runUpdateQueryOnce(localStore,"finalize2_insertConceptClasses1.txt");		
+		  runUpdateQueryOnce(localStore,"finalize3_insertConceptClasses2.txt");
 		  //7. The cleaning phase
 		  if(executeSimplify && !(status.stepDone("executeSimplify")))
 		  {
 		  	this.simplify();
 		  	cleanOWL();
+			  runUpdateQueryOnce(localStore,"simplify6_addIsCoreClass1.txt");		
+			  runUpdateQueryOnce(localStore,"simplify7_addIsCoreClass2.txt");
 		  	status.setStepDone("executeSimplify");
 		  }
 
@@ -686,14 +687,14 @@ public class Main
 	  tree.calculateSubClassOfIntanceOfCount();
 	  storeClassProps(tree);
 	  //Step 7.4
-	  for (ResultLine item : this.runLocalQuery(localStore,true,"clean4_getAllProps.txt"))
+	  for (ResultLine item : this.runLocalQuery(localStore,true,"simplify2_getAllProps.txt"))
   	{
 		  String property = item.getIRI("property");
 	    simplifyForProperty(tree,property);
 	  }
 	  //Step 7.5
-	  runUpdateQueryOnce(localStore,"clean6_removeAllShapeProps1.txt");
-	  runUpdateQueryOnce(localStore,"clean7_removeAllShapeProps2.txt");
+	  runUpdateQueryOnce(localStore,"simplify4_removeDanglingClassProps1.txt");
+	  runUpdateQueryOnce(localStore,"simplify5_removeDanglingClassProps2.txt");
 	}
 	
 	private void simplifyForProperty(Tree tree,String property) throws Exception
@@ -701,7 +702,7 @@ public class Main
 		//step 7.4.1: Step 1 of simplification process
 		System.out.println("performing simplification for property: " + property);
 		System.out.println("loading property information into the tree");
-		for (ResultLine item : this.runLocalQuery(localStore,true,"clean5_getAllShapeProps.txt",property))
+		for (ResultLine item : this.runLocalQuery(localStore,true,"simplify3_getAllClassProps.txt",property))
 		{
 			String source = item.getIRI("source");
 			String type = item.getIRI("type");
@@ -795,7 +796,7 @@ public class Main
 	{
 		System.out.println("building the subclassOf tree");
 		Tree tree = new Tree();
-		for (ResultLine item : this.runLocalQuery(localStore,true,"clean3_getTree.txt"))
+		for (ResultLine item : this.runLocalQuery(localStore,true,"simplify1_getTree.txt"))
 		{
 			String parent = item.getIRI("parent");
 			String child = item.getIRI("child");

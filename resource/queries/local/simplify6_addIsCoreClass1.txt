@@ -1,0 +1,19 @@
+#mark all classes that are a target of a property or are having a subclass that is a target of a property
+#WITH <http://ssb.wur.nl/RDF2Graph/>
+INSERT
+{
+  ?parents RDF2Graph:isCoreClass true .
+}
+#USING <http://ssb.wur.nl/RDF2Graph/>
+#SELECT *
+#FROM <http://ssb.wur.nl/RDF2Graph/> 
+WHERE
+{
+  ?typeLink a RDF2Graph:TypeLink .
+  ?typeLink RDF2Graph:type ?class .
+  ?class rdfs:subClassOf* ?parents .
+  ?class a RDF2Graph:Class .
+  FILTER(!(REGEX(str(?parents),"http://www.w3.org/2001/XMLSchema") || ?parents = RDF2Graph:invalid || ?parents = RDF2Graph:externalref || ?parents = rdf:langString))
+}
+
+

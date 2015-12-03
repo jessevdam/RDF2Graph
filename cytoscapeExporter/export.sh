@@ -8,15 +8,15 @@ echo "Export script is tested on cytoscape version 3.2"
 echo "TIP: use the scale function in Cytoscape to improve the readability of the view of the network"
 echo "TIP: enable graphical details, so edge names are always shown"
 project=$1 
-includeConcepts=$2
+showClassOption=$2
 output=$3
-if [[ "$1" = "-h" ||  "$1" = "--help"  || ( "$includeConcepts" != "true"  &&  "$includeConcepts" != "false") || ("$output" != "view" && "$output" != *".cys" && "$output" != *".xgmml") ]] ; then
+if [[ "$1" = "-h" ||  "$1" = "--help"  || ( "$showClassOption" != "all"  &&  "$showClassOption" != "default" &&  "$showClassOption" != "onlyCore") || ("$output" != "view" && "$output" != *".cys" && "$output" != *".xgmml") ]] ; then
   echo "usage"
   echo "export.sh <project> <include concept classes> <output>"
   echo "output -> 'view' opens cytoscape view"
   echo "output -> '*.cys' saves cytoscape session file to file"
   echo "output -> '*.xgmml' saves network to file and save error report to *_error.xgmml"
-  echo "include concept classes -> also include all concept classes in the view (true or false)" 
+  echo "show: all classes including concept classes:'all', show only classes with instances:'default', show only classes with properties after simplification 'onlyCore'" 
   exit
 fi
 
@@ -38,35 +38,27 @@ echo "exporting data to cytoscape files"
 mkdir -p ./temp
 #Get links from db
 #sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' work around for some bug in cytoscape it does something special to biopax ontology, which is buggy
-tdbquery --loc $project --query $DIR/queries/primarylinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 > ./temp/RDF2Graph.txt
-tdbquery --loc $project --query $DIR/queries/secondarylinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
-tdbquery --loc $project --query $DIR/queries/subClassOffByDefLinks1.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
-tdbquery --loc $project --query $DIR/queries/subClassOffByDefLinks2.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
-if [ "$includeConcepts" = "true" ] ; then
-  tdbquery --loc $project --query $DIR/queries/subClassOfLinksIncludeConceptsClasses.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
-else
-  tdbquery --loc $project --query $DIR/queries/subClassOfLinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/RDF2Graph.txt
-fi
+tdbquery --loc $project --query $DIR/queries/primarylinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 > ./temp/RDF2Graph.txt
+tdbquery --loc $project --query $DIR/queries/secondarylinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/RDF2Graph.txt
+tdbquery --loc $project --query $DIR/queries/subClassOffByDefLinks1.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/RDF2Graph.txt
+tdbquery --loc $project --query $DIR/queries/subClassOffByDefLinks2.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/RDF2Graph.txt
+tdbquery --loc $project --query $DIR/queries/subClassOfLinks_$showClassOption.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/RDF2Graph.txt
 PWD=$(pwd)
 
 echo -e "name\thide" > ./temp/nodeprops.txt 
 echo -e "ErrorReportHidden\thide" >> ./temp/nodeprops.txt
-tdbquery --loc $project --query $DIR/queries/hideSecondaryLinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/nodeprops.txt 
+tdbquery --loc $project --query $DIR/queries/hideSecondaryLinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/nodeprops.txt 
 echo -e "shared name\tname\tcount\tchild instance count\tfull iri" > ./temp/nodeprops2.txt 
-if [ "$includeConcepts" = "true" ] ; then
-  tdbquery --loc $project --query $DIR/queries/getnodepropertiesIncludeConceptClasses.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/nodeprops2.txt 
-else
-  tdbquery --loc $project --query $DIR/queries/getnodeproperties.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/nodeprops2.txt 
-fi
+tdbquery --loc $project --query $DIR/queries/getnodeproperties_$showClassOption.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/nodeprops2.txt 
 echo -e "shared name\tsource\tpredicate name\tdestination type\tforward multiplicity\treverse multiplicity\treference count\tis_simple\tfull predicate" > ./temp/edgeprops.txt 
-tdbquery --loc $project --query $DIR/queries/getedgeproperties.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/edgeprops.txt 
+tdbquery --loc $project --query $DIR/queries/getedgeproperties.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/edgeprops.txt 
 #error report generation
-tdbquery --loc $project --query $DIR/queries/errorReport1.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 > ./temp/errorreport.txt
+tdbquery --loc $project --query $DIR/queries/errorReport1.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 > ./temp/errorreport.txt
 echo -e "shared name\tname\thide" > ./temp/errornodeprops.txt 
 echo -e "ErrorReportHidden\tError-report\thide" >> ./temp/errornodeprops.txt 
 echo -e "ErrorReport\tError report\t" >> ./temp/errornodeprops.txt 
 echo -e "shared name\ttype\tpredicate name\treference count\tfull predicate" > ./temp/erroredgeprops.txt 
-tdbquery --loc $project --query $DIR/queries/errorReport2.txt --results TSV | sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level3.owl#/http:\/\/www.biopax.org\/release\/bp-level3.owl#/g' | tail -n +2 >> ./temp/erroredgeprops.txt 
+tdbquery --loc $project --query $DIR/queries/errorReport2.txt --results TSV | sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/erroredgeprops.txt 
 
 
 ##tdbquery --loc ../tdb --query $DIR/queries/getresult3.txt  > props.txt 

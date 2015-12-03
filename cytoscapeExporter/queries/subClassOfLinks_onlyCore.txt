@@ -1,0 +1,25 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+#INSERT
+#{
+#  ?class1 RDF2Graph:subClassInclude ?class2 .
+#  ?class1 RDF2Graph:subClassIncludeNot ?class3 .
+#}
+SELECT DISTINCT ?child2 ?subclass ?parent2
+FROM <http://ssb.wur.nl/RDF2Graph/>
+WHERE
+{
+  ?child a RDF2Graph:Class .
+  ?child RDF2Graph:isCoreClass true .
+  ?child rdfs:subClassOf ?parent .
+  ?parent a RDF2Graph:Class .
+  ?parent RDF2Graph:isCoreClass true .
+  #any of the (super)parents has a class property
+  BIND("subClassOf" as ?subclass) 
+  BIND (str(?child) as ?child2)
+  BIND (str(?parent) as ?parent2)
+}

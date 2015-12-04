@@ -384,8 +384,8 @@ public class Main
 			for (ResultLine item : this.runRemoteQuery(remoteGraph2,"getAllRDFLabels.txt",String.join(" ",classSet)))
 			{
 				String clazz = item.getIRI("class");
-				String label = item.getLitString("label");
-				String comment = item.getLitString("comment");
+				String label = item.asString("label");
+				String comment = item.asString("comment");
 				localStore.addLit(clazz,"rdfs:label",label);
 				if(comment != null)
 					localStore.addLit(clazz,"rdfs:comment",comment);

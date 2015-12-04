@@ -48,9 +48,9 @@ PWD=$(pwd)
 echo -e "name\thide" > ./temp/nodeprops.txt 
 echo -e "ErrorReportHidden\thide" >> ./temp/nodeprops.txt
 tdbquery --loc $project --query $DIR/queries/hideSecondaryLinks.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/nodeprops.txt 
-echo -e "shared name\tname\tcount\tchild instance count\tfull iri" > ./temp/nodeprops2.txt 
+echo -e "shared name\tname\tcount\tchild instance count\tlabel\tdescription\tfull iri" > ./temp/nodeprops2.txt 
 tdbquery --loc $project --query $DIR/queries/getnodeproperties_$showClassOption.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/nodeprops2.txt 
-echo -e "shared name\tsource\tpredicate name\tdestination type\tforward multiplicity\treverse multiplicity\treference count\tis_simple\tfull predicate" > ./temp/edgeprops.txt 
+echo -e "shared name\tsource\tpredicate name\tdestination type\tforward multiplicity\treverse multiplicity\treference count\tis_simple\tlabel\tdescription\tfull predicate" > ./temp/edgeprops.txt 
 tdbquery --loc $project --query $DIR/queries/getedgeproperties.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 >> ./temp/edgeprops.txt 
 #error report generation
 tdbquery --loc $project --query $DIR/queries/errorReport1.txt --results TSV |  sed 's/"//g' | sed 's/http:\/\/www.biopax.org\/release\/biopax-level/http:\/\/www.biopax.org\/release\/bp-level/g' | tail -n +2 > ./temp/errorreport.txt

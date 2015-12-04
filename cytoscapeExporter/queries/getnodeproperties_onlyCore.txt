@@ -4,7 +4,7 @@ PREFIX core: <http://purl.uniprot.org/core/>
 PREFIX RDF2Graph: <http://ssb.wur.nl/RDF2Graph/>	
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT ?source2 ?sourceName ?count ?childInstanceCount ?source 
+SELECT ?source2 ?sourceName ?count ?childInstanceCount ?label ?comment ?source 
 FROM <http://ssb.wur.nl/RDF2Graph/>
 WHERE
 {
@@ -20,5 +20,14 @@ WHERE
   }
   BIND (replace(str(?source),".*[/#]","") as ?sourceName)
   BIND(str(?source) as ?source2)
+  OPTIONAL
+  {
+    ?source rdfs:label ?labelTemp .
+  }
+  OPTIONAL
+  {
+    ?source rdfs:comment ?comment .
+  }
+  BIND(IF(bound(?labelTemp),?labelTemp,?sourceName) as ?label)
 }
 ORDER BY ?sourceName

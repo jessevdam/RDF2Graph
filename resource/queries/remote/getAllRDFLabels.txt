@@ -1,0 +1,11 @@
+SELECT ?class ?label ?comment
+FROM <%1$s>
+WHERE
+{
+  VALUES ?class { %2$s }
+  ?class rdfs:label ?label .
+  OPTIONAL
+  {
+    ?class rdfs:comment ?comment .
+  }
+}

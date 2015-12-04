@@ -11,6 +11,8 @@
 DELETE
 {
   ?class a RDF2Graph:Class .
+  ?class rdfs:label ?label .
+  ?class rdfs:comment ?comment .
   ?class RDF2Graph:count ?count .
   ?class RDF2Graph:subClassOfInstanceCount ?subCount .
   ?class rdfs:subClassOf ?parent .
@@ -51,6 +53,14 @@ WHERE
   OPTIONAL
   {  
     ?class rdfs:subClassOf ?parent .
+  }
+  OPTIONAL
+  {
+    ?class rdfs:label ?label .
+  }
+  OPTIONAL
+  {
+    ?class rdfs:comment ?comment .
   }
 }
 

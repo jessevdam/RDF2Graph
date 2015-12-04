@@ -12,6 +12,8 @@ DELETE
 {
   ?predicate a rdf:Property .
   ?predicate RDF2Graph:count ?count .
+  ?predicate rdfs:label ?label .
+  ?predicate rdfs:comment ?comment .
 }
 #SELECT *
 #FROM <http://ssb.wur.nl/RDF2Graph/> 
@@ -27,6 +29,14 @@ WHERE
   OPTIONAL 
   {
     ?predicate RDF2Graph:count ?count .
+  }
+  OPTIONAL
+  {
+    ?predicate rdfs:label ?label .
+  }
+  OPTIONAL
+  {
+    ?predicate rdfs:comment ?comment .
   }
 }
 

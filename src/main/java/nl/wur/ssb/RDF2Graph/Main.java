@@ -3,13 +3,14 @@ package nl.wur.ssb.RDF2Graph;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import nl.wur.ssb.RDF2Graph.simplify.UniqueTypeLink;
 import nl.wur.ssb.RDF2Graph.simplify.Tree;
 import nl.wur.ssb.RDF2Graph.simplify.TreeNode;
+import nl.wur.ssb.RDF2Graph.simplify.UniqueTypeLink;
 import nl.wur.ssb.RDFSimpleCon.RDFSimpleCon;
 import nl.wur.ssb.RDFSimpleCon.ResultLine;
 import nl.wur.ssb.RDFSimpleCon.concurrent.ResultHandler;
@@ -201,7 +202,7 @@ public class Main
 			init();
 		        
 		  //1. First get all the predicates present in the database
-			if ((status.stepDone("recoveryDone") || status.stepDone("1")))
+			if (status.stepDone("recoveryDone"))
 			{
 				System.out.println("Getting all predicates present in the database");
 				for (ResultLine item : this.runRemoteQuery(remoteGraph2,"getAllPredicates.txt"))
@@ -256,6 +257,7 @@ public class Main
 				this.executer.finishAllFirst();
 			
 		  	//4. get all classes present in the database and create them as RDF2Graph:Class
+				HashSet<String> classSet = new HashSet<String>(); 
 				for (ResultLine item : this.runRemoteQuery(remoteGraph2,"getAllClasses.txt"))
 				{
 					String clazz = item.getIRI("class");
@@ -269,6 +271,7 @@ public class Main
 					}
 				  System.out.println("class: " + clazz);
 					localStore.add(clazz,"rdf:type","RDF2Graph:Class");
+					classSet.add("<" + clazz + ">");
 				}
 		
 			  //5. get additional data for all the classes found in the database
@@ -308,11 +311,24 @@ public class Main
 		  		String parent = item.getIRI("parent");	
 					//System.out.println("class structure:" + parent + " -> " + child);
 				  localStore.add(child,"rdfs:subClassOf",parent);
-				}		  	
+				  classSet.add("<" + child + ">");
+				  classSet.add("<" + parent + ">");
+				}
+		  	getRDFLabels(classSet);
+		  	
 		  	System.out.println("Loaded: all subClass of relationships");
 				status.setStepDone("recoveryDone");	
 		 	}
 
+			//Get property labels and descriptions if available
+			LinkedList<String> propertySet = new LinkedList<String>();
+			for (ResultLine item : this.runLocalQuery(localStore,true,"simplify2_getAllProps.txt"))
+			{
+				propertySet.add(item.getIRI("property"));
+			}
+			getRDFLabels(propertySet);
+			
+			
 		  //Clean owl classes
 			cleanOWL();
 		  
@@ -358,6 +374,22 @@ public class Main
 			}
 			this.executer.close();
 			this.localStore.close();
+		}
+	}
+	
+	private void getRDFLabels(Collection<String> classSet) throws Exception
+	{
+		if(classSet.size() > 0)
+		{
+			for (ResultLine item : this.runRemoteQuery(remoteGraph2,"getAllRDFLabels.txt",String.join(" ",classSet)))
+			{
+				String clazz = item.getIRI("class");
+				String label = item.getLitString("label");
+				String comment = item.getLitString("comment");
+				localStore.addLit(clazz,"rdfs:label",label);
+				if(comment != null)
+					localStore.addLit(clazz,"rdfs:comment",comment);
+			}
 		}
 	}
 	

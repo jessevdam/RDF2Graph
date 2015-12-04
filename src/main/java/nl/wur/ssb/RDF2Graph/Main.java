@@ -202,7 +202,7 @@ public class Main
 			init();
 		        
 		  //1. First get all the predicates present in the database
-			if (status.stepDone("recoveryDone"))
+			if (!status.stepDone("recoveryDone"))
 			{
 				System.out.println("Getting all predicates present in the database");
 				for (ResultLine item : this.runRemoteQuery(remoteGraph2,"getAllPredicates.txt"))

@@ -314,7 +314,7 @@ public class Main
 				  classSet.add("<" + child + ">");
 				  classSet.add("<" + parent + ">");
 				}
-		  	getRDFLabels(classSet);
+		  	getRDFLabels(classSet);	ICY4126720201926
 		  	
 		  	System.out.println("Loaded: all subClass of relationships");
 				status.setStepDone("recoveryDone");	
@@ -324,7 +324,7 @@ public class Main
 			LinkedList<String> propertySet = new LinkedList<String>();
 			for (ResultLine item : this.runLocalQuery(localStore,true,"simplify2_getAllProps.txt"))
 			{
-				propertySet.add(item.getIRI("property"));
+				propertySet.add("<" + item.getIRI("property") + ">");
 			}
 			getRDFLabels(propertySet);
 			
@@ -349,7 +349,7 @@ public class Main
 			  runUpdateQueryOnce(localStore,"simplify7_addIsCoreClass2.txt");
 		  	status.setStepDone("executeSimplify");
 		  }
-
+		  
 	    if(this.status.hasPredAsClassDetected())
 	      System.out.println("Class as Predicate detected, note that the results might be invalid");
       System.out.println("recovery process completed");

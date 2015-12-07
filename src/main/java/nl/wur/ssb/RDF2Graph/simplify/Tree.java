@@ -81,10 +81,17 @@ public class Tree
   		node.setRootIfNoParents(root);
   	}
   	this.allNodes.add(this.root);
-  	TreeNode classNode = this.nodes.get("http://www.w3.org/2002/07/owl#Thing");           
-   	if(classNode != null) //TODO not for rdfs schema properties
+    //TODO not for rdfs schema properties
+  	setBehaveAsRoot("http://www.w3.org/2002/07/owl#Thing");           
+  //	setBehaveAsRoot("http://www.w3.org/2002/07/owl#Thing");           
+  	this.root.breakLoops(new HashSet<TreeNode>());
+  }
+  
+  private void setBehaveAsRoot(String nodeIri)
+  {
+  	TreeNode classNode = this.nodes.get(nodeIri);           
+   	if(classNode != null) 
   		classNode.behaveAsRoot();
-   	this.root.breakLoops(new HashSet<TreeNode>());
   }
   
   public void calculateSubClassOfIntanceOfCount()

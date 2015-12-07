@@ -12,7 +12,7 @@ showClassOption=$2
 output=$3
 if [[ "$1" = "-h" ||  "$1" = "--help"  || ( "$showClassOption" != "all"  &&  "$showClassOption" != "default" &&  "$showClassOption" != "onlyCore") || ("$output" != "view" && "$output" != *".cys" && "$output" != *".xgmml") ]] ; then
   echo "usage"
-  echo "export.sh <project> <include concept classes> <output>"
+  echo "export.sh <project> <show> <output>"
   echo "output -> 'view' opens cytoscape view"
   echo "output -> '*.cys' saves cytoscape session file to file"
   echo "output -> '*.xgmml' saves network to file and save error report to *_error.xgmml"

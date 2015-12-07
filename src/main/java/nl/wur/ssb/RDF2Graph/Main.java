@@ -13,6 +13,7 @@ import nl.wur.ssb.RDF2Graph.simplify.TreeNode;
 import nl.wur.ssb.RDF2Graph.simplify.UniqueTypeLink;
 import nl.wur.ssb.RDFSimpleCon.RDFSimpleCon;
 import nl.wur.ssb.RDFSimpleCon.ResultLine;
+import nl.wur.ssb.RDFSimpleCon.Util;
 import nl.wur.ssb.RDFSimpleCon.concurrent.ResultHandler;
 import nl.wur.ssb.RDFSimpleCon.concurrent.TaskExecuter;
 
@@ -48,7 +49,7 @@ public class Main
 	private boolean collectReverseMultiplicity = false;
 	private boolean executeSimplify = false; 
 	private boolean treatSubClassOfAsIntanceOf = false;
-	private boolean removeOWLClasses = false;
+	private boolean removeOWLProperties = false;
 	private boolean eachThreadOnePort = false;
 	private boolean useClassPropertyRecoveryPerClass = false;
 	private int numberOfThreads = 1;
@@ -107,8 +108,8 @@ public class Main
       		main.executeSimplify = true;
       	else if(enProp.equals("treatSubClassOfAsIntanceOf"))
       		main.treatSubClassOfAsIntanceOf = true;      
-      	else if(enProp.equals("removeOWLClasses"))
-      		main.removeOWLClasses = true;
+      	else if(enProp.equals("removeOWLProperties"))
+      		main.removeOWLProperties = true;
       	else if(enProp.equals("eachThreadOnePort"))
       		main.eachThreadOnePort = true;    	  
       	else if(enProp.equals("useClassPropertyRecoveryPerClass"))
@@ -319,6 +320,9 @@ public class Main
 		  	System.out.println("Loaded: all subClass of relationships");
 				status.setStepDone("recoveryDone");	
 		 	}
+			
+			//TODO move up
+			//loadDefaultSubClassOfRelationShips();
 
 			//Get property labels and descriptions if available
 			LinkedList<String> propertySet = new LinkedList<String>();
@@ -377,6 +381,18 @@ public class Main
 		}
 	}
 	
+	/*
+	 * Load default subClass relation ships from the OWL ontology itself
+	 */
+	private void loadDefaultSubClassOfRelationShips() throws Exception
+	{
+		for (String line : Util.readFile("defaultOwlSubClassOfRelations.tsv").split("\\n"))
+		{
+			String tmp[] = line.split("\\t");
+			this.localStore.add(tmp[0],"rdfs:subClassOf",tmp[1]);
+		}
+	}
+	
 	private void getRDFLabels(Collection<String> classSet) throws Exception
 	{
 		if(classSet.size() > 0)
@@ -395,7 +411,7 @@ public class Main
 	
 	private void cleanOWL()
 	{
-	  if(this.removeOWLClasses)
+	  if(this.removeOWLProperties)
 	  {
 	  	System.out.println("cleaning OWL classes");
 	  	localStore.runUpdateQuery("local/cleanOWL1.txt");

@@ -314,7 +314,7 @@ public class Main
 				  classSet.add("<" + child + ">");
 				  classSet.add("<" + parent + ">");
 				}
-		  	getRDFLabels(classSet);	ICY4126720201926
+		  	getRDFLabels(classSet);	
 		  	
 		  	System.out.println("Loaded: all subClass of relationships");
 				status.setStepDone("recoveryDone");	

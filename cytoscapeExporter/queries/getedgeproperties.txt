@@ -44,7 +44,7 @@ WHERE
     FILTER(REGEX(str(?type),"http://www.w3.org/2001/XMLSchema") || ?type = RDF2Graph:invalid || ?type = RDF2Graph:externalref)
     BIND (replace(str(?type),".*[/#]","") as ?typeNameTemp)
     BIND (true as ?isSimple)
-    BIND(concat(?sourcePath," (",?predLink,") ",str(?sourcePath),"/",?typeName) as ?shared)
+    BIND(concat(?sourcePath," (",?predLink,") ",str(?sourcePath),"/",?typeNameTemp) as ?shared)
   }  
   BIND (IF(regex(?typeNameTemp,"^\\d"),concat("_",?typeNameTemp),?typeNameTemp) as ?typeName)
   OPTIONAL

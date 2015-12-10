@@ -317,21 +317,19 @@ public class Main
 				}
 		  	getRDFLabels(classSet);	
 		  	
+		    //Get property labels and descriptions if available
+				LinkedList<String> propertySet = new LinkedList<String>();
+				for (ResultLine item : this.runLocalQuery(localStore,true,"simplify2_getAllProps.txt"))
+				{
+					propertySet.add("<" + item.getIRI("property") + ">");
+				}
+				getRDFLabels(propertySet);
+				
+				loadDefaultSubClassOfRelationShips();
+		  	
 		  	System.out.println("Loaded: all subClass of relationships");
 				status.setStepDone("recoveryDone");	
-		 	}
-			
-			//TODO move up
-			//loadDefaultSubClassOfRelationShips();
-
-			//Get property labels and descriptions if available
-			LinkedList<String> propertySet = new LinkedList<String>();
-			for (ResultLine item : this.runLocalQuery(localStore,true,"simplify2_getAllProps.txt"))
-			{
-				propertySet.add("<" + item.getIRI("property") + ">");
-			}
-			getRDFLabels(propertySet);
-			
+		 	}			
 			
 		  //Clean owl classes
 			cleanOWL();

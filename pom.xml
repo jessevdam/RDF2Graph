@@ -29,7 +29,7 @@
       <resource>
         <directory>resource</directory>
         <includes>
-          <include>**/*.txt</include>
+          <include>**</include>
         </includes>
       </resource>
     </resources>

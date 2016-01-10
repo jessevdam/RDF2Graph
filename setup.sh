@@ -1,5 +1,5 @@
 git clone https://github.com/jessevdam/RDFSimpleCon
-git pull
+git pull origin master
 git -C RDFSimpleCon/ pull
 git branch | sed -n '/\* /s///p' | xargs git -C RDFSimpleCon/ checkout 
 cd RDFSimpleCon

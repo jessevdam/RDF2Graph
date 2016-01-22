@@ -1,0 +1,23 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX destruct: <http://ssb.wur.nl/destruct/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dv: <http://ssb.wur.nl/destruct/viewer/>	
+
+WITH <http://ssb.wur.nl/destructviewer>
+DELETE
+{
+  dv:root dv:links ?link .
+}
+INSERT
+{
+  dv:root dv:selflinks ?link .
+}
+USING <http://ssb.wur.nl/destructviewer>
+WHERE
+{
+  ?link a dv:Link .
+  ?link dv:source ?target .
+  ?link dv:target ?target .
+}

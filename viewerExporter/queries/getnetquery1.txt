@@ -1,0 +1,39 @@
+#construct source to target graph linking
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX destruct: <http://ssb.wur.nl/destruct/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+PREFIX se: <http://www.w3.org/2013/ShEx/Definition#>
+PREFIX dv: <http://ssb.wur.nl/destruct/viewer/>	
+
+CONSTRUCT
+{
+  dv:root a dv:Root .
+  dv:root dv:nodes ?source .
+  dv:root dv:nodes ?dest .
+  ?source dv:name ?sourceName . 
+  ?dest dv:name ?destName .
+  ?source a dv:Node .
+  ?dest a dv:Node .
+  dv:root dv:links _:link .
+  _:link a dv:Link .
+  _:link dv:source ?source .
+  _:link dv:target ?dest .
+  _:link dv:name ?predName .
+}
+FROM <http://ssb.wur.nl/destruct/>
+WHERE
+{
+  ?source destruct:property ?classProp .
+  ?classProp destruct:rdfProperty ?pred .
+  BIND (replace(str(IF(?pred = rdfs:subClassOf,destruct:subClasOfByDef,?pred)),".*[/#]","") as ?predName)
+  ?classProp destruct:refToType ?refType .
+  BIND (replace(str(?source),".*[/#]","") as ?sourceName)
+  ?refType destruct:referenceTo ?dest .
+  FILTER(!REGEX(str(?dest),"http://www.w3.org/2001/XMLSchema") && ?dest != destruct:invalid && ?dest != destruct:externalref)
+  BIND (replace(str(?dest),".*[/#]","") as ?destName)
+  BIND (false as ?isSimple)
+}
+ORDER BY ?source

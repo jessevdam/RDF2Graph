@@ -1,0 +1,36 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX destruct: <http://ssb.wur.nl/destruct/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dv: <http://ssb.wur.nl/destruct/viewer/>	
+
+WITH <http://ssb.wur.nl/destructviewer>
+INSERT
+#CONSTRUCT
+{
+  dv:root dv:linkgroup ?group .
+  ?group a dv:Group .
+  ?group dv:member ?link .
+  ?link dv:memberOf ?group .
+}
+USING <http://ssb.wur.nl/destructviewer>
+#SELECT *
+#FROM <http://ssb.wur.nl/destructviewer>
+WHERE
+{
+  ?link a dv:Link .
+  ?link dv:source ?source .
+  ?link dv:target ?target .
+  BIND(iri(concat(str(?source),"/",replace(str(?target),".*[/#]",""))) as ?group)
+  {
+    SELECT ?source ?target
+    {
+      ?link a dv:Link .
+      ?link dv:source ?source .
+      ?link dv:target ?target .
+    }
+    GROUP BY ?source ?target
+  }
+}
+#ORDER BY ?source ?target

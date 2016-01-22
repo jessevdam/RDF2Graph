@@ -1,0 +1,46 @@
+{
+  "@context": {
+    "@vocab": "http://ssb.wur.nl/destruct/viewer/",
+    "source": {
+      "@id": "source",
+      "@type": "@id"
+    },
+    "target": {
+      "@id": "target",
+      "@type": "@id"
+    },
+    "property": {
+      "@id": "property",
+      "@type": "@id"
+    },
+    "isSimple": {
+      "@id": "isSimple",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "isSubClassOf": {
+      "@id": "isSubClassOf",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },   
+    "member": {
+      "@id": "member",
+      "@type": "@id"
+    },   
+    "memberOf": {
+      "@id": "memberOf",
+      "@type": "@id"
+    } 
+  },
+  "@type": "Root",
+  "linkgroup" : {
+   	"@type" : "Group"
+  }, 
+  "links" : {
+   	"@type" : "Link"
+  },
+  "selflinks" : {
+   	"@type" : "Link"
+  },
+  "nodes" : {
+    "@type" : "Node"
+  }
+}

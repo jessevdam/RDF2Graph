@@ -1,0 +1,33 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX destruct: <http://ssb.wur.nl/destruct/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dv: <http://ssb.wur.nl/destruct/viewer/>	
+PREFIX rs: <http://open-services.net/ns/core#>	
+
+CONSTRUCT
+{
+  dv:root dv:links _:link .
+  _:link a dv:Link .
+  _:link dv:source ?child .
+  _:link dv:target ?parent .
+  _:link dv:name "subClassOf" .
+  _:link dv:isSubClassOf true .
+}
+FROM <http://ssb.wur.nl/destruct/>
+WHERE
+{
+  ?child rdfs:subClassOf ?parent .
+  FILTER EXISTS
+  {
+    ?parent rdfs:subClassOf* ?checkparent .
+    ?checkparent destruct:property ?classProp1 .
+  }
+  FILTER EXISTS
+  {
+    ?checkchild rdfs:subClassOf* ?child .
+    ?checkchild destruct:property ?classProp2 .
+  }
+}
+ORDER BY ?child

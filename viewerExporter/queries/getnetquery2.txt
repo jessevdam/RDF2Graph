@@ -1,0 +1,59 @@
+#create property descriptions
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX destruct: <http://ssb.wur.nl/destruct/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+PREFIX se: <http://www.w3.org/2013/ShEx/Definition#>
+PREFIX dv: <http://ssb.wur.nl/destruct/viewer/>	
+
+CONSTRUCT
+{ 
+   ?source dv:property _:prop .
+  _:prop dv:property ?pred .
+  _:prop dv:name ?predName .
+  _:prop dv:type ?destName .
+  _:prop dv:type ?simpleName .
+  _:prop dv:forwardMultiplicity ?forwardMultiplicityName .
+  _:prop dv:reverseMultiplicity ?reverseMultiplicityName .
+  _:prop dv:count ?refCount .
+  _:prop dv:isSimple ?isSimple .  
+}
+FROM <http://ssb.wur.nl/destruct/>
+WHERE
+{
+  ?source destruct:property ?classProp .
+  ?classProp destruct:rdfProperty ?pred .
+  BIND (replace(str(IF(?pred = rdfs:subClassOf,destruct:subClasOfByDef,?pred)),".*[/#]","") as ?predName)
+  ?classProp destruct:refToType ?refType .
+  BIND (replace(str(?source),".*[/#]","") as ?sourceName)
+  {
+    ?refType destruct:referenceTo ?dest .
+    FILTER(!REGEX(str(?dest),"http://www.w3.org/2001/XMLSchema") && ?dest != destruct:invalid && ?dest != destruct:externalref)
+    BIND (replace(str(?dest),".*[/#]","") as ?destName)
+    BIND (false as ?isSimple)
+  }
+  UNION
+  {
+    ?refType destruct:referenceTo ?simple .
+    FILTER(REGEX(str(?simple),"http://www.w3.org/2001/XMLSchema") || !isIRI(?simple) || ?simple = destruct:invalid || ?simple = destruct:externalref)
+    BIND (replace(str(?simple),".*[/#]","") as ?simpleName)
+    BIND (true as ?isSimple)
+  }
+  OPTIONAL
+  {
+    ?refType destruct:forwardMultiplicity ?forwardMultiplicity .
+    BIND(IF(?forwardMultiplicity = rs:Exactly-one,"1",IF(?forwardMultiplicity = rs:Zero-or-one,"0..1",IF(?forwardMultiplicity = rs:Zero-or-many,"0..N",IF(?forwardMultiplicity = rs:One-or-many,"1..n","invalid")))) as ?forwardMultiplicityName)
+  }
+  OPTIONAL
+  {
+    ?refType destruct:reverseMultiplicity ?reverseMultiplicity .
+    BIND(IF(?reverseMultiplicity = rs:Exactly-one,"1",IF(?reverseMultiplicity = rs:Zero-or-one,"0..1",IF(?reverseMultiplicity = rs:Zero-or-many,"0..N",IF(?reverseMultiplicity = rs:One-or-many,"1..n","invalid")))) as ?reverseMultiplicityName)
+  }
+  OPTIONAL
+  {
+    ?refType destruct:count ?refCount .
+  }
+}
+ORDER BY ?source

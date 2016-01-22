@@ -1,0 +1,23 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX core: <http://purl.uniprot.org/core/>		
+PREFIX destruct: <http://ssb.wur.nl/destruct/>	
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rs: <http://open-services.net/ns/core#>		
+PREFIX se: <http://www.w3.org/2013/ShEx/Definition#>
+PREFIX dv: <http://ssb.wur.nl/destruct/viewer/>	
+
+SELECT *
+FROM <http://ssb.wur.nl/destruct/>
+WHERE
+{
+  ?domain rs:property ?shapeprop .
+  ?shapeprop rs:propertyDefinition ?pred .
+  BIND (replace(str(IF(?pred = rdfs:subClassOf,destruct:subClasOfByDef,?pred)),".*[/#]","") as ?predName)
+  ?shapeprop rs:valueShape ?range .
+  #FILTER(!REGEX(str(?range),"http://www.w3.org/2001/XMLSchema") && ?range != destruct:invalid && ?range != destruct:externalref)
+  #BIND (replace(str(?range),".*[/#]","") as ?rangeName)
+  #?shapeprop rs:occurs ?occurs .
+  #BIND (replace(str(?domain),".*[/#]","") as ?domainName)
+}
+ORDER BY ?domain

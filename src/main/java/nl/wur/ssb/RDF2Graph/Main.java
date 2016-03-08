@@ -19,13 +19,12 @@ import nl.wur.ssb.RDFSimpleCon.concurrent.TaskExecuter;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
 
 
 /*
@@ -164,7 +163,7 @@ public class Main
 	{				
 		System.out.println("loading/creating local tdb database");
 		localStore = new RDFSimpleCon("[http://ssb.wur.nl/RDF2Graph/]",this.project);	
-		System.out.println("loading/creating local tdb database done");
+		System.out.println("loading/creating local tdb database done"); 
 		localStore.setNsPrefix("rdf","http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		localStore.setNsPrefix("rdfs","http://www.w3.org/2000/01/rdf-schema#");
 		localStore.setNsPrefix("owl","http://www.w3.org/2002/07/owl#");	

@@ -17,6 +17,7 @@ import nl.wur.ssb.RDFSimpleCon.Util;
 import nl.wur.ssb.RDFSimpleCon.concurrent.ResultHandler;
 import nl.wur.ssb.RDFSimpleCon.concurrent.TaskExecuter;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.jena.query.Query;
@@ -31,14 +32,13 @@ import org.apache.log4j.Logger;
  * Please see doc manual.pdf for full description of the process
  */
 
-public class Main
+public class RDF2Graph
 {
 	private HashSet<String> excludeProps = new HashSet<String>();
 	private StatusSystem status;
   private	RDFSimpleCon remoteGraph1;
   private	RDFSimpleCon remoteGraph2;
 	private RDFSimpleCon localStore;
-	private String project;
 	private TaskExecuter executer;
 	private boolean collectPredicateStatistics = false;
 	private boolean collectClassStatistics = false;
@@ -49,7 +49,6 @@ public class Main
 	private boolean executeSimplify = false; 
 	private boolean treatSubClassOfAsIntanceOf = false;
 	private boolean removeOWLProperties = false;
-	private boolean eachThreadOnePort = false;
 	private boolean useClassPropertyRecoveryPerClass = false;
 	private int numberOfThreads = 1;
 	private HashMap<String,LinkedList<String>> keepUniq = new HashMap<String,LinkedList<String>>(); 
@@ -58,18 +57,33 @@ public class Main
 	{
 		BasicConfigurator.configure();
 		Logger.getRootLogger().setLevel(Level.WARN);
-		Main main = new Main();
-
+	
 		boolean ok = true;
   		
+		String outputDir = "";
+		RDFSimpleCon remoteGraph1 = null;
+		RDFSimpleCon remoteGraph2 = null;
+		boolean collectPredicateStatistics = false;
+		boolean collectClassStatistics = false;
+		boolean collectShapePropertyStatistics = false;
+		boolean checkPredicateSourceClass = false;
+		boolean collectForwardMultiplicity = false;
+		boolean collectReverseMultiplicity = false;
+		boolean executeSimplify = false; 
+		boolean treatSubClassOfAsIntanceOf = false;
+		boolean removeOWLProperties = false;
+		boolean eachThreadOnePort = false;
+		boolean useClassPropertyRecoveryPerClass = false;
+		int numberOfThreads = 1;
+		
 		int rest = 2;
 		if(args.length >= 2)
 		{
-			main.project = args[0];
-			main.remoteGraph1 = main.remoteGraph2 = new RDFSimpleCon(args[1]);
+			outputDir = args[0];
+			remoteGraph1 = new RDFSimpleCon(args[1]);
 			if(args.length >= 3 && args[2].equals("+"))
 			{
-				main.remoteGraph2 = new RDFSimpleCon(args[3]);
+				remoteGraph2 = new RDFSimpleCon(args[3]);
 				rest = 4;
 			}
 		}
@@ -84,40 +98,40 @@ public class Main
     	  String enProp = args[i].substring(2);
     	  if(enProp.equals("all"))
     	  {
-    	  	main.collectPredicateStatistics = true;
-    	  	main.collectClassStatistics = true;
-    	  	main.checkPredicateSourceClass = true;
-    	  	main.collectShapePropertyStatistics = true;
-    	  	main.collectForwardMultiplicity = true;
-    	  	main.collectReverseMultiplicity = true;
+    	  	collectPredicateStatistics = true;
+    	  	collectClassStatistics = true;
+    	  	checkPredicateSourceClass = true;
+    	  	collectShapePropertyStatistics = true;
+    	  	collectForwardMultiplicity = true;
+    	  	collectReverseMultiplicity = true;
     	  }
     	  else if(enProp.equals("collectPredicateStatistics"))
-      		main.collectPredicateStatistics = true;
+      		collectPredicateStatistics = true;
       	else if(enProp.equals("collectClassStatistics"))
-      		main.collectClassStatistics = true;
+      		collectClassStatistics = true;
       	else if(enProp.equals("collectShapePropertyStatistics"))//TODO Rename
-      		main.collectShapePropertyStatistics = true;
+      		collectShapePropertyStatistics = true;
       	else if(enProp.equals("checkPredicateSourceClass"))
-      		main.checkPredicateSourceClass = true;
+      		checkPredicateSourceClass = true;
       	else if(enProp.equals("collectForwardMultiplicity"))
-      		main.collectForwardMultiplicity = true;
+      		collectForwardMultiplicity = true;
       	else if(enProp.equals("collectReverseMultiplicity"))
-      		main.collectReverseMultiplicity = true;
+      		collectReverseMultiplicity = true;
       	else if(enProp.equals("executeSimplify"))
-      		main.executeSimplify = true;
+      		executeSimplify = true;
       	else if(enProp.equals("treatSubClassOfAsIntanceOf"))
-      		main.treatSubClassOfAsIntanceOf = true;      
+      		treatSubClassOfAsIntanceOf = true;      
       	else if(enProp.equals("removeOWLProperties"))
-      		main.removeOWLProperties = true;
+      		removeOWLProperties = true;
       	else if(enProp.equals("eachThreadOnePort"))
-      		main.eachThreadOnePort = true;    	  
+      		eachThreadOnePort = true;    	  
       	else if(enProp.equals("useClassPropertyRecoveryPerClass"))
-      		main.useClassPropertyRecoveryPerClass = true;
+      		useClassPropertyRecoveryPerClass = true;
       	else if(enProp.equals("multiThread"))
       	{
       		try
       		{
-      	  	main.numberOfThreads = Integer.parseInt(args[++i]);
+      	  	numberOfThreads = Integer.parseInt(args[++i]);
       		}
       		catch(Throwable th)
       		{
@@ -139,10 +153,12 @@ public class Main
     }
 		if(ok) 
 		{
-			if(main.eachThreadOnePort)
-			{
-				main.remoteGraph1.enableEachThreadSeperatePort(main.numberOfThreads);
-			}
+			System.out.println("loading/creating local tdb database");
+			RDFSimpleCon localStore = new RDFSimpleCon("[http://ssb.wur.nl/RDF2Graph/]",outputDir);	
+			System.out.println("loading/creating local tdb database done"); 
+			RDF2Graph main = new RDF2Graph(localStore, remoteGraph1, remoteGraph2, collectPredicateStatistics, collectClassStatistics,collectShapePropertyStatistics, 
+					checkPredicateSourceClass, collectForwardMultiplicity, collectReverseMultiplicity, executeSimplify, treatSubClassOfAsIntanceOf,
+					removeOWLProperties, eachThreadOnePort, useClassPropertyRecoveryPerClass, numberOfThreads);
 	  	main.run();
 		}
 	  else
@@ -153,6 +169,46 @@ public class Main
 	  }
 	}
 	
+	public RDF2Graph(RDFSimpleCon localStore, RDFSimpleCon graph,boolean executeSimplify,boolean removeOWLProperties)
+	{
+		this(localStore,graph,true,true,true,true,true,true,executeSimplify,false,removeOWLProperties);
+	}
+	
+	public RDF2Graph(RDFSimpleCon localStore,RDFSimpleCon remoteGraph,boolean collectPredicateStatistics,boolean collectClassStatistics,
+			boolean collectShapePropertyStatistics, boolean checkPredicateSourceClass,boolean collectForwardMultiplicity,boolean collectReverseMultiplicity,
+			boolean executeSimplify, 	boolean treatSubClassOfAsIntanceOf,	boolean removeOWLProperties)
+	{
+		this(localStore,remoteGraph,null,collectPredicateStatistics,collectClassStatistics,collectShapePropertyStatistics,checkPredicateSourceClass,
+				collectForwardMultiplicity,collectReverseMultiplicity, executeSimplify, treatSubClassOfAsIntanceOf,removeOWLProperties,false,false,1);
+	}
+	
+	public RDF2Graph(RDFSimpleCon localStore,RDFSimpleCon graph1,RDFSimpleCon graph2,boolean collectPredicateStatistics,boolean collectClassStatistics,
+			boolean collectShapePropertyStatistics, boolean checkPredicateSourceClass,boolean collectForwardMultiplicity,boolean collectReverseMultiplicity,
+			boolean executeSimplify, 	boolean treatSubClassOfAsIntanceOf,	boolean removeOWLProperties,boolean eachThreadOnePort,
+			boolean useClassPropertyRecoveryPerClass,	int numberOfThreads)
+	{
+		this.localStore = localStore;
+		this.remoteGraph1 = graph1;
+		this.remoteGraph2 = graph2;
+		if(this.remoteGraph2 == null)
+			this.remoteGraph2 = this.remoteGraph1;
+		this.collectPredicateStatistics = collectPredicateStatistics;
+		this.collectClassStatistics = collectClassStatistics;
+		this.collectShapePropertyStatistics = collectShapePropertyStatistics;
+		this.checkPredicateSourceClass = checkPredicateSourceClass;
+		this.collectForwardMultiplicity = collectForwardMultiplicity;
+		this.collectReverseMultiplicity = collectReverseMultiplicity;
+		this.executeSimplify = executeSimplify; 
+		this.treatSubClassOfAsIntanceOf = treatSubClassOfAsIntanceOf;
+		this.removeOWLProperties = removeOWLProperties;
+		this.useClassPropertyRecoveryPerClass = useClassPropertyRecoveryPerClass;
+		this.numberOfThreads = numberOfThreads;
+		if(eachThreadOnePort)
+		{
+			remoteGraph1.enableEachThreadSeperatePort(numberOfThreads);
+		}
+	}
+	
 	//Some predicates are not interesting for the structure recovery and should be excluded
 	public boolean filterPredicate(String predicate)
 	{
@@ -161,9 +217,6 @@ public class Main
 	
 	public void init() throws Exception
 	{				
-		System.out.println("loading/creating local tdb database");
-		localStore = new RDFSimpleCon("[http://ssb.wur.nl/RDF2Graph/]",this.project);	
-		System.out.println("loading/creating local tdb database done"); 
 		localStore.setNsPrefix("rdf","http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		localStore.setNsPrefix("rdfs","http://www.w3.org/2000/01/rdf-schema#");
 		localStore.setNsPrefix("owl","http://www.w3.org/2002/07/owl#");	
@@ -191,7 +244,7 @@ public class Main
 	  this.executer = new TaskExecuter(this.numberOfThreads);
 	}
 	
-	public Main()
+	public RDF2Graph()
 	{
 
 	}

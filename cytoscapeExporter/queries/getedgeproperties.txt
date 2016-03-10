@@ -22,30 +22,17 @@ FROM <http://ssb.wur.nl/RDF2Graph/>
 WHERE
 {
   ?source RDF2Graph:property ?classProp .
+  BIND (str(?source) as ?sourcePath)
   BIND (replace(str(?source),".*[/#]","") as ?sourceNameTemp)
   BIND (IF(regex(?sourceNameTemp,"^\\d"),concat("_",?sourceNameTemp),?sourceNameTemp) as ?sourceName)
   ?classProp RDF2Graph:rdfProperty ?pred .
   BIND (replace(str(IF(?pred = rdfs:subClassOf,RDF2Graph:subClassOfByDef,?pred)),".*[/#]","") as ?predName)
   ?classProp RDF2Graph:linkTo ?typeLink .
-  {
-    BIND (str(IF(?pred = rdfs:subClassOf,RDF2Graph:subClassOfByDef,?pred)) as ?predLink)
-    BIND (str(?source) as ?sourcePath)
-    ?typeLink RDF2Graph:type ?type .
-    FILTER(!REGEX(str(?type),"http://www.w3.org/2001/XMLSchema") && ?type != RDF2Graph:invalid && ?type != RDF2Graph:externalref)
-    BIND (replace(str(?type),".*[/#]","") as ?typeNameTemp)
-    BIND (false as ?isSimple)
-    BIND(concat(?sourcePath," (",?predLink,") ",str(?type)) as ?shared)
-  }
-  UNION
-  {
-    BIND (str(IF(?pred = rdfs:subClassOf,RDF2Graph:subClassOfByDef,?pred)) as ?predLink)
-    BIND (str(?source) as ?sourcePath)
-    ?typeLink RDF2Graph:type ?type .
-    FILTER(REGEX(str(?type),"http://www.w3.org/2001/XMLSchema") || ?type = RDF2Graph:invalid || ?type = RDF2Graph:externalref)
-    BIND (replace(str(?type),".*[/#]","") as ?typeNameTemp)
-    BIND (true as ?isSimple)
-    BIND(concat(?sourcePath," (",?predLink,") ",str(?sourcePath),"/",?typeNameTemp) as ?shared)
-  }  
+  ?typeLink RDF2Graph:type ?type .
+  BIND (str(IF(?pred = rdfs:subClassOf,RDF2Graph:subClassOfByDef,?pred)) as ?predLink)
+  BIND ((REGEX(str(?type),"http://www.w3.org/2001/XMLSchema") || ?type = RDF2Graph:invalid || ?type = RDF2Graph:externalref) as ?isSimple)
+  BIND (replace(str(?type),".*[/#]","") as ?typeNameTemp)
+  BIND(concat(?sourcePath," (",?predLink,") ",IF(?isSimple,concat(str(?sourcePath),"/",?typeNameTemp),str(?type))) as ?shared)
   BIND (IF(regex(?typeNameTemp,"^\\d"),concat("_",?typeNameTemp),?typeNameTemp) as ?typeName)
   OPTIONAL
   {

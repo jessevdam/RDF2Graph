@@ -19,8 +19,8 @@ public class RDF2GraphTest extends TestCase
   public void testParsing() throws Exception
   {
   	//TODO busy adding testcases
-  	RDFSimpleCon con = new RDFSimpleCon(RDF2GraphTest.class.getResource("labels.tsv").toString());
-  	con.save("test.ttl");
+  	//RDFSimpleCon con = new RDFSimpleCon(RDF2GraphTest.class.getResource("labels.tsv").toString());
+  	//con.save("test.ttl");
   	//Util.
     //System.out.println(Util.readFile("test.tsv"));
   }

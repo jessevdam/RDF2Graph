@@ -5,7 +5,7 @@ html
       | PREFIX xsd: #{'<'}http://www.w3.org/2001/XMLSchema#>
       | PREFIX rdf: #{'<'}http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       | 
-      - each clazz in data.class
+      - each clazz in lib.to_array(data.class)
         - if(clazz.subClassOf)
           | 
           | #{'<'}#{clazz['@id']}> & #{_(lib.to_array(clazz.subClassOf)).map(function(item) { return "<" + item + ">";}).join()} {

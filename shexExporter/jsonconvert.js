@@ -49,29 +49,28 @@ program.command('compact [filename]')
   .option('-g, --graph', 'always output top-level graph [false]')
   .action(function(input, cmd) {
     async.auto({
-      readContext: function(callback, results) {
+      readContext: function(callback) {
         // use built-in context loader
         jsonld.request(cmd.context, {}, function(err, res, data) {
           callback(err, data);
         });
       },
-      readInput: function(callback, results) {
+      readInput: function(callback) {
         jsonld.request(input, {}, function(err, res, data) {
           callback(err, data);
         });
       },
-      process: ['readContext', 'readInput', function(callback, results) {
+      process: ['readContext', 'readInput', function(results,callback) {
         var options = {};
         options.strict = cmd.strict;
         options.compactArrays = cmd.compactArrays;
         options.graph = !!cmd.graph;
-
         jsonld.compact(results.readInput, results.readContext, options,
           function(err, compacted) {
             callback(err, compacted);
           });
       }],
-      output: ['process', function(callback, results) {
+      output: ['process', function(results,callback) {
       	 var output = JSON.stringify(results.process, null, 2);
          process.stdout.write(output);
          process.stdout.write("\n");
@@ -97,7 +96,7 @@ program.command('frame [filename]')
           callback(err, data);
         });
       },
-      process: ['readInput', 'readFrame', function(callback, results) {
+      process: ['readInput', 'readFrame', function(results,callback) {
         var options = {};
         options.embed = true
         options.explicit = false
@@ -108,7 +107,7 @@ program.command('frame [filename]')
             callback(err, framed);
           });
       }],
-      output: ['process', function(callback, results) {
+      output: ['process', function(results,callback) {
       	 var output = JSON.stringify(results.process, null, 2);
          process.stdout.write(output);
          process.stdout.write("\n");
